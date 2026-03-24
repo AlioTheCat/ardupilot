@@ -120,6 +120,9 @@ const AP_Scheduler::Task Sub::scheduler_tasks[] = {
 #ifdef USERHOOK_SUPERSLOWLOOP
     SCHED_TASK(userhook_SuperSlowLoop, 1,     75,  90),
 #endif
+#if AP_CHAD_ENABLED
+    SCHED_TASK(update_CHAD, 200, 10000, 68) // method, frequency, max_time (micros), priority
+#endif
 };
 
 void Sub::get_scheduler_tasks(const AP_Scheduler::Task *&tasks,
@@ -174,6 +177,13 @@ void Sub::update_batt_compass()
         compass.set_throttle(motors.get_throttle());
         compass.read();
     }
+}
+
+// update_CHAD - read CHAD transmission
+// sould be called at 30hz at least
+void Sub::update_CHAD()
+{
+    chad.read();
 }
 
 #if HAL_LOGGING_ENABLED

@@ -20,6 +20,9 @@ void Sub::init_ardupilot()
     // initialise battery monitor
     battery.init();
 
+    // initialise CHAD mode
+    chad.init();
+
     barometer.init();
 
 #if AP_FEATURE_BOARD_DETECT
