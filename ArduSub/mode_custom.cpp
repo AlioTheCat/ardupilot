@@ -2,6 +2,9 @@
 
 
 bool ModeCustom::init(bool ignore_checks) {
+
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Activation du mode custom !");
+
     // set target altitude to zero for reporting
     position_control->set_pos_desired_z_cm(0);
 
