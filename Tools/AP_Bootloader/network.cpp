@@ -426,7 +426,7 @@ void BL_Network::handle_post(SocketAPM *sock, uint32_t content_length)
     }
     /*
       receive file and write to flash
-     */
+    */
     uint32_t buf[128];
     uint32_t ofs = 0;
 

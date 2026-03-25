@@ -20,8 +20,7 @@ void Sub::init_ardupilot()
     // initialise battery monitor
     battery.init();
 
-    // initialise CHAD mode
-    chad.init();
+    
 
     barometer.init();
 
@@ -158,6 +157,9 @@ void Sub::init_ardupilot()
     mainloop_failsafe_enable();
 
     ins.set_log_raw_bit(MASK_LOG_IMU_RAW);
+
+    // initialise CHAD mode
+    chad.init();
 
     // flag that initialisation has completed
     ap.initialised = true;
