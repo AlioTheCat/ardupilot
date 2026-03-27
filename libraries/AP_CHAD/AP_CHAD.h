@@ -9,19 +9,17 @@
 class AP_CHAD{
 
 public:
+    AP_CHAD();
+    ~AP_CHAD();
+
     void init();
     void read();
 
 private:
-    // SocketAPM *socket;
-    // char buffer[12];
-    // uint32_t station_ip;
-    // uint32_t station_port;
+    SocketAPM *socket;
+    char buffer[12];
 
-    //char* part1 = &buffer[0];
-    //char* part2 = &buffer[4];
-    //char* part3 = &buffer[8];
-    //float Sx, Sy, Sz;
+    float Sx, Sy, Sz; // Speed to apply
 };
 
 #endif
