@@ -473,6 +473,79 @@ const AP_Param::Info Sub::var_info[] = {
 
     // variables not in the g class which contain EEPROM saved variables
 
+    
+
+    ///////////////////////////////////////////
+    //POSSIBLEMENT DE LA MERDE !!!!
+    //////////////////////////////////////////
+
+
+    // @Param: Prop_cust_x 
+    // @DisplayName: Prop x
+    // @Description: Proportional gain for x axis
+    // @Values: float 
+    // @User: Advanced
+    GSCALAR(Px,  "Prop_cust_x", 1.0),
+    
+    // @Param: Prop_cust_y
+    // @DisplayName: Prop y
+    // @Description: Proportional gain for y axis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Py,  "Prop_cust_y", 1.0),
+    
+    // @Param: Prop_cust_z
+    // @DisplayName: Prop z
+    // @Description: Proportional gain for z axis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Pz,  "Prop_cust_z", 1.0),
+
+    // @Param: Int_cust_x
+    // @DisplayName: Int x
+    // @Description: Integral gain for x axis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Ix,  "Int_cust_x", 1.0),
+    
+    // @Param: Int_cust_y
+    // @DisplayName: Int y
+    // @Description: Integral gain for y ayis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Iy,  "Int_cust_y", 1.0),
+    
+    // @Param: Int_cust_z
+    // @DisplazName: Int z
+    // @Description: Integral gain for z azis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Iz,  "Int_cust_z", 1.0),
+    
+    // @Param: Deriv_cust_x
+    // @DisplayName: Deriv x
+    // @Description: Derivative gain for x axis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Dx,  "Deriv_cust_x", 1.0),
+    
+    // @Param: Deriv_cust_y
+    // @DisplayName: Deriv y
+    // @Description: Derivative gain for y axis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Dy,  "Deriv_cust_y", 1.0),
+    
+    // @Param: Deriv_cust_z
+    // @DisplayName: Deriv z
+    // @Description: Derivative gain for z azis
+    // @Values: float
+    // @User: Advanced
+    GSCALAR(Dz,  "Deriv_cust_z", 1.0),
+
+
+
+
 #if AP_CAMERA_ENABLED
     // @Group: CAM
     // @Path: ../libraries/AP_Camera/AP_Camera.cpp

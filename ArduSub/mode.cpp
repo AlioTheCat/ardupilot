@@ -60,7 +60,11 @@ Mode *Sub::mode_from_mode_num(const Mode::Number mode)
         ret = &mode_motordetect;
         break;
     case Mode::Number::CUSTOM:
-        ret = &mode_custom; //TODO : défini où ?
+        ret = &mode_custom;
+        break;
+    case Mode::Number::CHAD:
+        ret = &mode_chad;
+        break;
     default:
         break;
     }

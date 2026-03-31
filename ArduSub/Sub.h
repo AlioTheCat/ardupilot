@@ -63,7 +63,7 @@
 #include <AP_LeakDetector/AP_LeakDetector.h> // Leak detector
 #include <AP_Proximity/AP_Proximity.h>
 #include <AP_Rally/AP_Rally.h>
-#include <AP_CHAD/AP_CHAD.h> // CHAD mode
+#include <AP_CHAD/AP_CHAD.h> // CHAD sensor
 
 // Local modules
 #include "defines.h"
@@ -120,6 +120,7 @@ public:
     friend class ModeSurface;
     friend class ModeMotordetect;
     friend class ModeCustom;
+    friend class ModeChad;
 
     Sub(void);
 
@@ -607,6 +608,7 @@ private:
     ModeMotordetect mode_motordetect;
     ModeSurftrak mode_surftrak;
     ModeCustom mode_custom;
+    ModeChad mode_chad;
 
     // Auto
     AutoSubMode auto_mode;   // controls which auto controller is run

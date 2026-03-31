@@ -50,8 +50,9 @@ public:
         POSHOLD =      16,  // automatic position hold with manual override, with automatic throttle
         MANUAL =       19,  // Pass-through input with no stabilization
         MOTOR_DETECT = 20,  // Automatically detect motors orientation
-        SURFTRAK =     21,   // Track distance above seafloor (hold range)
-        CUSTOM =       22   // Custom mode
+        SURFTRAK =     21,  // Track distance above seafloor (hold range)
+        CUSTOM =       22,  // Custom mode
+        CHAD =         67   // CHAD mode
         // Mode number 30 reserved for "offboard" for external/lua control.
     };
 
@@ -189,6 +190,36 @@ public:
 
     // end pass-through functions
 };
+
+
+
+class ModeChad : public Mode
+{
+
+public:
+    // inherit constructor
+    using Mode::Mode;
+    virtual void run() override;
+    bool init(bool ignore_checks) override;
+    bool requires_GPS() const override { return false; }
+    bool has_manual_throttle() const override { return false; } // à vérifier
+    bool allows_arming(bool from_gcs) const override { return true; }
+    bool is_autopilot() const override { return false; } // à checker aussi
+
+protected:
+
+    const char *name() const override { return "CHAD"; }
+    const char *name4() const override { return "CHAD"; }
+    Mode::Number number() const override { return Mode::Number::CHAD; }
+
+    // PID for axes x = forward, y = left, z = up 
+        AC_PID PIDx{g.Px, g.Ix, g.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
+        AC_PID PIDy{g.Py, g.Iy, g.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
+        AC_PID PIDz{g.Pz, g.Iz, g.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
+};
+
+
+
 
 class ModeCustom : public Mode
 {

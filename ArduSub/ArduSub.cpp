@@ -180,10 +180,13 @@ void Sub::update_batt_compass()
 }
 
 // update_CHAD - read CHAD transmission
-// sould be called at 30hz at least
+// should be called at 30hz at least
+// but thus iff CHAD mode is active
 void Sub::update_CHAD()
 {
+    if (control_mode == Mode::Number::CHAD) {
     chad.read();
+    }
 }
 
 #if HAL_LOGGING_ENABLED

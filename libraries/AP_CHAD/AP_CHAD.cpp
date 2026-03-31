@@ -44,6 +44,8 @@ void AP_CHAD::read()
             memcpy(&Sz, buffer+8, 4);
 
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", Sx, Sy, Sz);
+
+            last_update = AP_HAL::millis();
         }
         else 
         {
@@ -52,6 +54,12 @@ void AP_CHAD::read()
     } else {
         GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : waiting");
     }
+}
+
+void AP_CHAD::transmit(float& dx, float& dy, float& dz) {
+    dx = Sx;
+    dy = Sy;
+    dz = Sz;
 }
 
 #endif
