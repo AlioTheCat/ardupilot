@@ -216,6 +216,13 @@ protected:
         AC_PID PIDx{g.Px, g.Ix, g.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
         AC_PID PIDy{g.Py, g.Iy, g.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
         AC_PID PIDz{g.Pz, g.Iz, g.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
+
+    void PID_servo(Vector3<float> target, int dt, Vector3<float>& U);
+
+    // trying to replicate guided mode
+    void angle_control_start();
+    void angle_control_run();
+    void set_auto_yaw_mode(autopilot_yaw_mode yaw_mode);
 };
 
 

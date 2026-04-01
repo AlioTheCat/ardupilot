@@ -16,10 +16,14 @@ public:
 
     void init();
     void read();
-    void transmit(float& dx, float& dy, float& dz);
+    void transmit(float& dx, float& dy, float& dz, int& dt);
 
     // Time in ms since last update.
-    uint32_t time_since_last_update(){return AP_HAL::millis() - last_update;}
+    void update_time_dates(){
+        uint32_t tmp = AP_HAL::millis();
+        last_delta_time = tmp - last_update;
+        last_update = tmp;
+    }
 
 private:
     SocketAPM *socket;
@@ -27,6 +31,7 @@ private:
 
     float Sx, Sy, Sz; // Speed to apply
     bool new_update;
+    uint32_t last_delta_time = 0;
     std::clock_t last_update;
 };
 

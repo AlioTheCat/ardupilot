@@ -216,6 +216,23 @@ public:
         k_param_acro_balance_roll,
         k_param_acro_balance_pitch,
 
+        ////////////////////////////////////////
+        // CHAD MODE --> possiblement de la merde
+        
+        k_param_Px,
+        k_param_Py,
+        k_param_Pz,
+
+        k_param_Ix,
+        k_param_Iy,
+        k_param_Iz,
+
+        k_param_Dx,
+        k_param_Dy,
+        k_param_Dz,
+
+        ////////////////////////////////////////
+
         // RPM Sensor
         k_param_rpm_sensor = 232, // Disabled
 
@@ -338,6 +355,21 @@ public:
     AP_Float        acro_balance_pitch;
     AP_Int8         acro_trainer;
     AP_Float        acro_expo;
+
+    //////////////////////////////////////////
+    // CHAD Mode --> POSSIBLEMENT DE LA MERDE
+     
+    AP_Float        Px;
+    AP_Float        Py;
+    AP_Float        Pz;
+    AP_Float        Ix;
+    AP_Float        Iy;
+    AP_Float        Iz;
+    AP_Float        Dx;
+    AP_Float        Dy;
+    AP_Float        Dz;
+
+    //////////////////////////////////////////
 
     AP_Float                surface_depth;
     AP_Int8                 frame_configuration;

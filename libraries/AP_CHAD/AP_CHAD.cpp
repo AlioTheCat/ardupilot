@@ -28,6 +28,8 @@ void AP_CHAD::init()
         return;
     }
 
+    last_update = AP_HAL::millis();
+
     socket -> set_blocking(false); //continuous operation
 
     GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor initialized");
@@ -45,7 +47,7 @@ void AP_CHAD::read()
 
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", Sx, Sy, Sz);
 
-            last_update = AP_HAL::millis();
+            update_time_dates();
         }
         else 
         {
@@ -56,10 +58,11 @@ void AP_CHAD::read()
     }
 }
 
-void AP_CHAD::transmit(float& dx, float& dy, float& dz) {
+void AP_CHAD::transmit(float& dx, float& dy, float& dz, int& dt) {
     dx = Sx;
     dy = Sy;
     dz = Sz;
+    dt = last_delta_time;
 }
 
 #endif
