@@ -5,7 +5,6 @@
 
 static Vector3p posvel_pos_target_cm;
 static Vector3f posvel_vel_target_cms;
-static uint32_t update_time_ms;
 
 struct {
     uint32_t update_time_ms;
@@ -13,7 +12,7 @@ struct {
     float pitch_cd;
     float yaw_cd;
     float climb_rate_cms;
-} static guided_angle_state = {0,0.0f, 0.0f, 0.0f, 0.0f};
+} static guided_angle_state = {0, 0.0f, 0.0f, 0.0f, 0.0f};
 
 
 bool ModeChad::init(bool ignore_checks){
@@ -48,9 +47,9 @@ void ModeChad::angle_control_start()
     guided_angle_state.yaw_cd = ahrs.yaw_sensor;
     guided_angle_state.climb_rate_cms = 0.0f;
 
-    // pilot always controls yaw
-    sub.yaw_rate_only = false;
-    set_auto_yaw_mode(AUTO_YAW_HOLD);
+    // // pilot always controls yaw
+    // sub.yaw_rate_only = false;
+    // set_auto_yaw_mode(AUTO_YAW_HOLD);
 }
 
 void ModeChad::angle_control_run()
@@ -80,15 +79,15 @@ void ModeChad::angle_control_run()
     // wrap yaw request
     float yaw_in = wrap_180_cd(guided_angle_state.yaw_cd);
 
-    // constrain climb rate
-    float climb_rate_cms = constrain_float(guided_angle_state.climb_rate_cms, -sub.wp_nav.get_default_speed_down(), sub.wp_nav.get_default_speed_up());
+    // // constrain climb rate
+    // float climb_rate_cms = constrain_float(guided_angle_state.climb_rate_cms, -sub.wp_nav.get_default_speed_down(), sub.wp_nav.get_default_speed_up());
 
     // check for timeout - set lean angles and climb rate to zero if no updates received for 3 seconds
     uint32_t tnow = AP_HAL::millis();
     if (tnow - guided_angle_state.update_time_ms > GUIDED_ATTITUDE_TIMEOUT_MS) {
         roll_in = 0.0f;
         pitch_in = 0.0f;
-        climb_rate_cms = 0.0f;
+        // climb_rate_cms = 0.0f;
     }
 
     // set motors to full range
@@ -149,6 +148,121 @@ void ModeChad::set_auto_yaw_mode(autopilot_yaw_mode yaw_mode)
     }
 }
 
+////////////////////////////////     POS CONTROL    ////////////////////////////////
+
+// // initialise guided mode's position controller
+// void ModeChad::pos_control_start()
+// {
+//     // initialise waypoint controller
+//     sub.wp_nav.wp_and_spline_init();
+
+//     // initialise wpnav to stopping point at current altitude
+//     // To-Do: set to current location if disarmed?
+//     // To-Do: set to stopping point altitude?
+//     Vector3f stopping_point;
+//     sub.wp_nav.get_wp_stopping_point(stopping_point);
+
+//     // no need to check return status because terrain data is not used
+//     sub.wp_nav.set_wp_destination(stopping_point, false);
+// }
+
+// // pos_control_run - runs the guided position controller
+// // called from guided_run
+// void ModeChad::pos_control_run()
+// {
+//     // // if motors not enabled set throttle to zero and exit immediately
+//     // if (!motors.armed()) {
+//     //     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::GROUND_IDLE);
+//     //     // Sub vehicles do not stabilize roll/pitch/yaw when disarmed
+//     //     attitude_control->set_throttle_out(0,true,g.throttle_filt);
+//     //     attitude_control->relax_attitude_controllers();
+//     //     sub.wp_nav.wp_and_spline_init();
+//     //     return;
+//     // }
+
+//     // // process pilot's yaw input
+//     // float target_yaw_rate = 0;
+//     // if (!sub.failsafe.pilot_input) {
+//     //     // get pilot's desired yaw rate
+//     //     target_yaw_rate = sub.get_pilot_desired_yaw_rate(channel_yaw->get_control_in());
+//     //     if (!is_zero(target_yaw_rate)) {
+//     //         set_auto_yaw_mode(AUTO_YAW_HOLD);
+//     //     } else{
+//     //         if (sub.yaw_rate_only){
+//     //             set_auto_yaw_mode(AUTO_YAW_RATE);
+//     //         } else{
+//     //             set_auto_yaw_mode(AUTO_YAW_LOOK_AT_HEADING);
+//     //         }
+//     //     }
+//     // }
+
+//     // set motors to full range
+//     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
+
+//     // run waypoint controller
+//     sub.failsafe_terrain_set_status(sub.wp_nav.update_wpnav());
+
+//     float lateral_out, forward_out;
+//     sub.translate_wpnav_rp(lateral_out, forward_out);
+
+//     // Send to forward/lateral outputs
+//     motors.set_lateral(lateral_out);
+//     motors.set_forward(forward_out);
+
+//     // WP_Nav has set the vertical position control targets
+//     // run the vertical position controller and set output throttle
+//     position_control->update_z_controller();
+
+//     // // call attitude controller
+//     // if (sub.auto_yaw_mode == AUTO_YAW_HOLD) {
+//     //     // roll & pitch & yaw rate from pilot
+//     //     attitude_control->input_euler_angle_roll_pitch_euler_rate_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), target_yaw_rate);
+//     // } else if (sub.auto_yaw_mode == AUTO_YAW_LOOK_AT_HEADING) {
+//     //     // roll, pitch from pilot, yaw & yaw_rate from auto_control
+//     //     target_yaw_rate = sub.yaw_look_at_heading_slew * 100.0;
+//     //     attitude_control->input_euler_angle_roll_pitch_slew_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), get_auto_heading(), target_yaw_rate);
+//     // } else if (sub.auto_yaw_mode == AUTO_YAW_RATE) {
+//     //     // roll, pitch from pilot, yaw_rate from auto_control
+//     //     target_yaw_rate = sub.yaw_look_at_heading_slew * 100.0;
+//     //     attitude_control->input_euler_angle_roll_pitch_euler_rate_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), target_yaw_rate);
+//     // } else {
+//     //     // roll, pitch from pilot, yaw heading from auto_heading()
+//     //     attitude_control->input_euler_angle_roll_pitch_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), get_auto_heading(), true);
+//     // }
+// }
+
+// // set_destination - sets guided mode's target destination
+// // Returns true if the fence is enabled and guided waypoint is within the fence
+// // else return false if the waypoint is outside the fence
+// bool ModeChad::set_destination(const Vector3f& destination)
+// {
+// #if AP_FENCE_ENABLED
+//     // reject destination if outside the fence
+//     const Location dest_loc(destination, Location::AltFrame::ABOVE_ORIGIN);
+//     if (!sub.fence.check_destination_within_fence(dest_loc)) {
+//         LOGGER_WRITE_ERROR(LogErrorSubsystem::NAVIGATION, LogErrorCode::DEST_OUTSIDE_FENCE);
+//         // failure is propagated to GCS with NAK
+//         return false;
+//     }
+// #endif
+
+//     // ensure we are in position control mode
+//     if (sub.guided_mode != Guided_WP) {
+//         pos_control_start();
+//     }
+
+//     // no need to check return status because terrain data is not used
+//     sub.wp_nav.set_wp_destination(destination, false);
+
+// #if HAL_LOGGING_ENABLED
+//     // log target
+//     sub.Log_Write_GuidedTarget(sub.guided_mode, destination, Vector3f());
+// #endif
+
+//     return true;
+// }
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -189,7 +303,11 @@ void ModeChad::run(){
         return;
     }
 
+    
+    
     angle_control_run();
+
+
 
     // Assumption : the vfov is oriented downwards.
     
@@ -199,15 +317,11 @@ void ModeChad::run(){
     Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
 
     Vector3<float> target = {0.f, 0.f, 0.f};
-    float& dx = target[0];
-    float& dy = target[1];
-    float& dz = target[2];
+    float& dx (target[0]), dy (target[1]), dz (target[2]);
     int dt;
 
     Vector3<float> U;
-    float& Ux = U[0];
-    float& Uy = U[1];
-    float& Uz = U[2];
+    float& Ux (U[0]), Uy (U[1]), Uz (U[2]);
     
     // Réception du capteur
     sub.chad.transmit(dx, dy, dz, dt);
@@ -216,6 +330,8 @@ void ModeChad::run(){
 
     dt = std::min(1000, dt); // Pas plus d'une seconde.
     
+
+
     // Asservissement du système
     
     PID_servo(target, dt, U);

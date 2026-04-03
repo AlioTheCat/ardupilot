@@ -27,6 +27,8 @@ void ModeCustom::run()
         return;
     }
 
+    sub.camera.get_fov_status();
+
     sub.motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
     sub.motors.set_roll(channel_roll->norm_input());

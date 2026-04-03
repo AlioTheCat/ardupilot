@@ -52,7 +52,7 @@ public:
         MOTOR_DETECT = 20,  // Automatically detect motors orientation
         SURFTRAK =     21,  // Track distance above seafloor (hold range)
         CUSTOM =       22,  // Custom mode
-        CHAD =         67   // CHAD mode
+        CHAD =         23   // CHAD mode
         // Mode number 30 reserved for "offboard" for external/lua control.
     };
 
@@ -219,10 +219,16 @@ protected:
 
     void PID_servo(Vector3<float> target, int dt, Vector3<float>& U);
 
-    // trying to replicate guided mode
+    // trying to replicate guided mode's angle control
     void angle_control_start();
     void angle_control_run();
     void set_auto_yaw_mode(autopilot_yaw_mode yaw_mode);
+
+    // trying to replicate guided mode's pos control
+    
+    void pos_control_run();
+    bool set_destination(const Vector3f& destination);
+    void pos_control_start();
 };
 
 
