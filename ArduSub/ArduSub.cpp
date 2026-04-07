@@ -121,7 +121,7 @@ const AP_Scheduler::Task Sub::scheduler_tasks[] = {
     SCHED_TASK(userhook_SuperSlowLoop, 1,     75,  90),
 #endif
 #if AP_CHAD_ENABLED
-    SCHED_TASK(update_CHAD, 1, 200, 68) // method, frequency, max_time (micros), priority
+    SCHED_TASK(update_CHAD, 100, 200, 68) // method, frequency, max_time (micros), priority
 #endif
 };
 

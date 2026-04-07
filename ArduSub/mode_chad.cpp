@@ -311,8 +311,9 @@ void ModeChad::run(){
 
     // Assumption : the vfov is oriented downwards.
     
-    float vfov = 0.f; // = - camera_backend.vertical_fov()
-                      // orienté vers le haut
+    float vfov = AP_CHAD_ANGLE; // = - camera_backend.vertical_fov()
+                                // orienté vers le haut
+                                // -40° (-0.69813) ou 0°
 
     Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
 
@@ -323,31 +324,34 @@ void ModeChad::run(){
     Vector3<float> U;
     float& Ux (U[0]), Uy (U[1]), Uz (U[2]);
     
-    // Réception du capteur
-    sub.chad.transmit(dx, dy, dz, dt);
-    // Changement de référentiel
-    target = (cancel_cam_orientation) * target;
+    // Réception du capteur. Contrôle ssi nouvelle update reçue
+    if (sub.chad.transmit(dx, dy, dz, dt) && dt<1000){
 
-    dt = std::min(1000, dt); // Pas plus d'une seconde.
-    
+        // màj 
+        last_instruction_date = AP_HAL::millis();
 
-
-    // Asservissement du système
-    
-    PID_servo(target, dt, U);
+        // Changement de référentiel
+        target = (cancel_cam_orientation) * target;
+        
 
 
+        // Asservissement du système
+        
+        PID_servo(target, dt, U);
 
-    // Preprocess
-    Uy = Uy/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
 
-    Ux = constrain_float(Ux, -1.f, 1.f);
-    Uy = constrain_float(Uy, 0.f, 1.f);
-    Uz = constrain_float(Uz, -1.f, 1.f);
-    
 
-    motors.set_lateral(Ux);
-    motors.set_throttle(-Uy); // l'axe y est orienté à l'opposé de la poussée. 
-    motors.set_forward(Uz);
+        // Preprocess
+        Uy = Uy/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
+
+        Ux = constrain_float(Ux, -1.f, 1.f);
+        Uy = constrain_float(Uy, 0.f, 1.f);
+        Uz = constrain_float(Uz, -1.f, 1.f);
+        
+
+        motors.set_lateral(Ux);
+        motors.set_throttle(-Uy); // l'axe y est orienté à l'opposé de la poussée. 
+        motors.set_forward(Uz);
+    };
 }
 

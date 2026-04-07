@@ -48,6 +48,7 @@ void AP_CHAD::read()
             GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", Sx, Sy, Sz);
 
             update_time_dates();
+            new_update=true;
         }
         else 
         {
@@ -58,11 +59,17 @@ void AP_CHAD::read()
     }
 }
 
-void AP_CHAD::transmit(float& dx, float& dy, float& dz, int& dt) {
-    dx = Sx;
-    dy = Sy;
-    dz = Sz;
-    dt = last_delta_time;
+bool AP_CHAD::transmit(float& dx, float& dy, float& dz, int& dt) {
+    // Returns false if this update is not new
+    if (new_update){
+        new_update = false;
+        dx = Sx;
+        dy = Sy;
+        dz = Sz;
+        dt = last_delta_time;
+        return true;
+    }
+    return false;
 }
 
 #endif

@@ -226,9 +226,17 @@ protected:
 
     // trying to replicate guided mode's pos control
     
-    void pos_control_run();
-    bool set_destination(const Vector3f& destination);
-    void pos_control_start();
+    // void pos_control_run();
+    // bool set_destination(const Vector3f& destination);
+    // void pos_control_start();
+
+private:
+
+    uint32_t last_instruction_date;
+
+    uint32_t time_since_last_instruction() { return AP_HAL::millis() - last_instruction_date; };
+
+    bool timeout() {return time_since_last_instruction() > 1000;};
 };
 
 

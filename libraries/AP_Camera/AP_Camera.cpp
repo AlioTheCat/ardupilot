@@ -656,22 +656,6 @@ void AP_Camera::send_camera_fov_status(mavlink_channel_t chan)
 }
 #endif
 
-// CHAD MODE
-void AP_Camera::get_fov_status()
-{
-    WITH_SEMAPHORE(_rsem);
-    
-    float hfov, vfov;
-    // call each instance
-    for (uint8_t instance = 0; instance < AP_CAMERA_MAX_INSTANCES; instance++) {
-        if (_backends[instance] != nullptr) {
-            hfov = _backends[instance]->horizontal_fov();
-            vfov = _backends[instance]->vertical_fov();
-            GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f", hfov, vfov);
-        }
-    }
-}
-
 // send camera capture status message to GCS
 void AP_Camera::send_camera_capture_status(mavlink_channel_t chan)
 {

@@ -168,6 +168,22 @@ public:
         k_param_p_vel_z, // deprecated
         k_param_pid_accel_z, // deprecated
 
+        ////////////////////////////////////////
+        // CHAD MODE --> possiblement de la merde
+        
+        k_param_Px,
+        k_param_Py,
+        k_param_Pz,
+
+        k_param_Ix,
+        k_param_Iy,
+        k_param_Iz,
+
+        k_param_Dx,
+        k_param_Dy,
+        k_param_Dz, //139
+
+        ////////////////////////////////////////
 
         // Failsafes
         k_param_failsafe_gcs = 140,
@@ -215,23 +231,6 @@ public:
         k_param_acro_rp_p,
         k_param_acro_balance_roll,
         k_param_acro_balance_pitch,
-
-        ////////////////////////////////////////
-        // CHAD MODE --> possiblement de la merde
-        
-        k_param_Px,
-        k_param_Py,
-        k_param_Pz,
-
-        k_param_Ix,
-        k_param_Iy,
-        k_param_Iz,
-
-        k_param_Dx,
-        k_param_Dy,
-        k_param_Dz,
-
-        ////////////////////////////////////////
 
         // RPM Sensor
         k_param_rpm_sensor = 232, // Disabled

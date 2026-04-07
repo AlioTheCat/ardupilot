@@ -16,7 +16,7 @@ public:
 
     void init();
     void read();
-    void transmit(float& dx, float& dy, float& dz, int& dt);
+    bool transmit(float& dx, float& dy, float& dz, int& dt);
 
     // Time in ms since last update.
     void update_time_dates(){
@@ -32,7 +32,7 @@ private:
     float Sx, Sy, Sz; // Speed to apply
     bool new_update;
     uint32_t last_delta_time = 0;
-    std::clock_t last_update;
+    uint32_t last_update;
 };
 
 #endif
