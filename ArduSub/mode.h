@@ -217,7 +217,7 @@ protected:
         AC_PID PIDy{g.Py, g.Iy, g.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
         AC_PID PIDz{g.Pz, g.Iz, g.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
 
-    void PID_servo(Vector3<float> target, int dt, Vector3<float>& U);
+    void PID_servo(Vector3<float> target, int dt, Vector3<float>& F); // Computes force to apply from CPU measurements 
 
     // trying to replicate guided mode's angle control
     void angle_control_start();

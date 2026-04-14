@@ -480,68 +480,68 @@ const AP_Param::Info Sub::var_info[] = {
     //////////////////////////////////////////
 
 
-    // @Param: Prop_cust_x 
+    // @Param: PROP_CHAD_X 
     // @DisplayName: Prop x
     // @Description: Proportional gain for x axis
     // @Values: float 
     // @User: Advanced
-    GSCALAR(Px,  "Prop_cust_x", 1.0),
+    GSCALAR(Px,  "PROP_CHAD_X", 1.0),
     
-    // @Param: Prop_cust_y
+    // @Param: PROP_CHAD_y
     // @DisplayName: Prop y
     // @Description: Proportional gain for y axis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Py,  "Prop_cust_y", 1.0),
+    GSCALAR(Py,  "PROP_CHAD_Y", 1.0),
     
-    // @Param: Prop_cust_z
+    // @Param: PROP_CHAD_Z
     // @DisplayName: Prop z
     // @Description: Proportional gain for z axis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Pz,  "Prop_cust_z", 1.0),
+    GSCALAR(Pz,  "PROP_CHAD_Z", 1.0),
 
-    // @Param: Int_cust_x
+    // @Param: INT_CHAD_X
     // @DisplayName: Int x
     // @Description: Integral gain for x axis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Ix,  "Int_cust_x", 1.0),
+    GSCALAR(Ix,  "INT_CHAD_X", 1.0),
     
-    // @Param: Int_cust_y
+    // @Param: INT_CHAD_y
     // @DisplayName: Int y
     // @Description: Integral gain for y ayis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Iy,  "Int_cust_y", 1.0),
+    GSCALAR(Iy,  "INT_CHAD_Y", 1.0),
     
-    // @Param: Int_cust_z
+    // @Param: INT_CHAD_Z
     // @DisplazName: Int z
     // @Description: Integral gain for z azis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Iz,  "Int_cust_z", 1.0),
+    GSCALAR(Iz,  "INT_CHAD_Z", 1.0),
     
-    // @Param: Deriv_cust_x
+    // @Param: DERIV_CHAD_X
     // @DisplayName: Deriv x
     // @Description: Derivative gain for x axis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Dx,  "Deriv_cust_x", 1.0),
+    GSCALAR(Dx,  "DERIV_CHAD_X", 1.0),
     
-    // @Param: Deriv_cust_y
+    // @Param: DERIV_CHAD_y
     // @DisplayName: Deriv y
     // @Description: Derivative gain for y axis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Dy,  "Deriv_cust_y", 1.0),
+    GSCALAR(Dy,  "DERIV_CHAD_Y", 1.0),
     
-    // @Param: Deriv_cust_z
+    // @Param: DERIV_CHAD_Z
     // @DisplayName: Deriv z
     // @Description: Derivative gain for z azis
     // @Values: float
     // @User: Advanced
-    GSCALAR(Dz,  "Deriv_cust_z", 1.0),
+    GSCALAR(Dz,  "DERIV_CHAD_Z", 1.0),
 
 
 

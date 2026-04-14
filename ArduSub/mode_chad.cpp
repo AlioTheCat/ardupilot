@@ -1,5 +1,7 @@
 #include "Sub.h"
 
+#include <iostream>
+
 #define GUIDED_ATTITUDE_TIMEOUT_MS  1000    // guided mode's attitude controller times out after 1 second with no new updates
 
 
@@ -271,8 +273,9 @@ void ModeChad::set_auto_yaw_mode(autopilot_yaw_mode yaw_mode)
 ////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
-
-void ModeChad::PID_servo(Vector3<float> target, int dt, Vector3<float>& U){
+/* Computes force to apply from measurement */
+void ModeChad::PID_servo(Vector3<float> measure, int dt, Vector3<float>& F){
+    // PID parameters in straight camera coordinate system
     PIDx.set_kP(g.Px);
     PIDx.set_kI(g.Ix);
     PIDx.set_kD(g.Dx);
@@ -285,14 +288,14 @@ void ModeChad::PID_servo(Vector3<float> target, int dt, Vector3<float>& U){
     PIDz.set_kI(g.Iz);
     PIDz.set_kD(g.Dz);
 
-    U[0] = PIDx.update_all(0, target[0], dt*1e-3);
-    U[1] = PIDy.update_all(0, target[1], dt*1e-3);
-    U[2] = PIDz.update_all(0, target[2], dt*1e-3);
+    F[0] = - PIDx.update_all(0, measure[0], dt*1e-3); // horizontal axis goes from right to left
+    F[1] = PIDy.update_all(0, measure[1], dt*1e-3);
+    F[2] = PIDz.update_all(0, measure[2], dt*1e-3);
 }
 
 
 // manual_run - runs the manual (passthrough) controller
-// should be called at 100hz or more
+// should be called at 5hz or more
 void ModeChad::run(){
 
     // if not armed set throttle to zero and exit immediately
@@ -303,9 +306,10 @@ void ModeChad::run(){
         return;
     }
 
+    motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
+
     
-    
-    angle_control_run();
+    //angle_control_run();
 
 
 
@@ -315,43 +319,53 @@ void ModeChad::run(){
                                 // orienté vers le haut
                                 // -40° (-0.69813) ou 0°
 
+    
+
     Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
 
-    Vector3<float> target = {0.f, 0.f, 0.f};
-    float& dx (target[0]), dy (target[1]), dz (target[2]);
-    int dt;
+    Vector3<float> measure = {0.f, 0.f, 0.f};
+    float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
+    int dt=0;
 
-    Vector3<float> U;
-    float& Ux (U[0]), Uy (U[1]), Uz (U[2]);
-    
+    // std::cout << "CHAD : Coucou j'entre dans la fonction run";
+
+    Vector3<float> F = {0.f, 0.f, 0.f};
+    float& F_lateral (F[0]); float& F_throttle (F[1]); float& F_forward (F[2]); // force to apply to the ROV to control translation
+
+    bool transmition(sub.chad.transmit(dx, dy, dz, dt));
+    // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
+
     // Réception du capteur. Contrôle ssi nouvelle update reçue
-    if (sub.chad.transmit(dx, dy, dz, dt) && dt<1000){
+    if (transmition && dt<1000){
+
+        // std::cout << "CHAD : Coucou j'entre dans la condition if" << std::endl;
 
         // màj 
         last_instruction_date = AP_HAL::millis();
 
-        // Changement de référentiel
-        target = (cancel_cam_orientation) * target;
-        
-
+        // Changement de référentiel 
+        std::cout << "CHAD : Coucou j'ai reçu " << dx << ", " << dy << ", " << dz << ", " << dt << std::endl;
+        Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
 
         // Asservissement du système
         
-        PID_servo(target, dt, U);
+        PID_servo(measure_camera_straight, dt, F);
 
-
+        std::cout << "CHAD : le PID renvoie : " << F_lateral << ", " << F_throttle << ", " << F_forward << std::endl;
 
         // Preprocess
-        Uy = Uy/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
+        F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
 
-        Ux = constrain_float(Ux, -1.f, 1.f);
-        Uy = constrain_float(Uy, 0.f, 1.f);
-        Uz = constrain_float(Uz, -1.f, 1.f);
+        F_lateral = constrain_float(F_lateral, -1.f, 1.f);
+        F_throttle = constrain_float(F_throttle, 0.f, 1.f);
+        F_forward = constrain_float(F_forward, -1.f, 1.f);
         
+        std::cout << "CHAD : J'applique aux moteurs : " << F_lateral << ", " << F_forward << ", " << F_throttle << std::endl;
 
-        motors.set_lateral(Ux);
-        motors.set_throttle(-Uy); // l'axe y est orienté à l'opposé de la poussée. 
-        motors.set_forward(Uz);
+
+        motors.set_forward(F_forward); // set_forward = vers l'avant (entre -1 et 1)
+        motors.set_lateral(F_lateral); // set_lateral = vers la gauche (entre -1 et 1)
+        motors.set_throttle(F_throttle); // set_throttle = vers le haut (entre 0 et 1)
     };
 }
 

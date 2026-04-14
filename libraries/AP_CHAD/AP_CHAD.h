@@ -16,7 +16,7 @@ public:
 
     void init();
     void read();
-    bool transmit(float& dx, float& dy, float& dz, int& dt);
+    bool transmit(float& _dx, float& _dy, float& _dz, int& _dt);
 
     // Time in ms since last update.
     void update_time_dates(){
@@ -29,7 +29,7 @@ private:
     SocketAPM *socket;
     char buffer[12];
 
-    float Sx, Sy, Sz; // Speed to apply
+    float dx, dy, dz; // CHAD Processing Unit measurements
     bool new_update;
     uint32_t last_delta_time = 0;
     uint32_t last_update;

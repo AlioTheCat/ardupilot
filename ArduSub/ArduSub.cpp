@@ -121,7 +121,7 @@ const AP_Scheduler::Task Sub::scheduler_tasks[] = {
     SCHED_TASK(userhook_SuperSlowLoop, 1,     75,  90),
 #endif
 #if AP_CHAD_ENABLED
-    SCHED_TASK(update_CHAD, 100, 200, 68) // method, frequency, max_time (micros), priority
+    SCHED_TASK_CLASS(AP_CHAD, &sub.chad, read, 20, 5, 77) // //class, instance, method, frequency, max_time (micros), priority
 #endif
 };
 
@@ -179,15 +179,16 @@ void Sub::update_batt_compass()
     }
 }
 
-// update_CHAD - read CHAD transmission
-// should be called at 30hz at least
-// but thus iff CHAD mode is active
-void Sub::update_CHAD()
-{
-    if (control_mode == Mode::Number::CHAD) {
-    chad.read();
-    }
-}
+// // update_CHAD - read CHAD transmission
+// // should be called at 30hz at least
+// // but thus iff CHAD mode is active
+// void Sub::update_CHAD()
+// {
+//     return;
+//     if (control_mode == Mode::Number::CHAD) {
+//     chad.read();
+//     }
+// }
 
 #if HAL_LOGGING_ENABLED
 // ten_hz_logging_loop

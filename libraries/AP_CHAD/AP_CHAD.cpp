@@ -1,6 +1,8 @@
 #include "AP_CHAD_config.h"
 #include <GCS_MAVLink/GCS.h>
 
+#include <iostream>
+
 #if AP_CHAD_ENABLED
 
 #include "AP_CHAD.h"
@@ -37,36 +39,40 @@ void AP_CHAD::init()
 
 void AP_CHAD::read()
 {
+    // std::cout << "CHAD sensor : J'entre dans la fonction read" << std::endl;
     ssize_t len = socket -> recv(buffer, sizeof(buffer), 0);
+    // std::cout << "socket length : " << len << ", buffer size : " << sizeof(buffer) << std::endl;
     if (len > 0) {
         if (len == sizeof(buffer)) {
 
-            memcpy(&Sx, buffer  , 4);
-            memcpy(&Sy, buffer+4, 4);
-            memcpy(&Sz, buffer+8, 4);
+            memcpy(&dx, buffer  , 4);
+            memcpy(&dy, buffer+4, 4);
+            memcpy(&dz, buffer+8, 4);
 
-            GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", Sx, Sy, Sz);
+            //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", dx, dy, dz);
+
+            // std::cout << "CHAD sensor : received : " << dx << ", " << dy << ", " << dz << std::endl; 
 
             update_time_dates();
             new_update=true;
         }
         else 
         {
-            GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : data incomplete");   
+            //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : data incomplete");   
         }
     } else {
-        GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : waiting");
+        //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : waiting");
     }
 }
 
-bool AP_CHAD::transmit(float& dx, float& dy, float& dz, int& dt) {
+bool AP_CHAD::transmit(float& _dx, float& _dy, float& _dz, int& _dt) {
     // Returns false if this update is not new
     if (new_update){
         new_update = false;
-        dx = Sx;
-        dy = Sy;
-        dz = Sz;
-        dt = last_delta_time;
+        _dx = dx;
+        _dy = dy;
+        _dz = dz;
+        _dt = last_delta_time;
         return true;
     }
     return false;
