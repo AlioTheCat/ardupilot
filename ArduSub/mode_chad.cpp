@@ -18,7 +18,7 @@ struct {
 
 
 bool ModeChad::init(bool ignore_checks){
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Activation du mode (giga)chad 🗿");
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Activation du mode (giga)chad ( ͡° ͜ʖ ͡°)");
 
     // attitude hold inputs become thrust inputs in manual mode
     // set to neutral to prevent chaotic behavior (esp. roll/pitch)
@@ -288,7 +288,7 @@ void ModeChad::PID_servo(Vector3<float> measure, int dt, Vector3<float>& F){
     PIDz.set_kI(g.Iz);
     PIDz.set_kD(g.Dz);
 
-    F[0] = - PIDx.update_all(0, measure[0], dt*1e-3); // horizontal axis goes from right to left
+    F[0] = - PIDx.update_all(0, measure[0], dt*1e-3); // horizontal axis goes from right (-1) to left (1)
     F[1] = PIDy.update_all(0, measure[1], dt*1e-3);
     F[2] = PIDz.update_all(0, measure[2], dt*1e-3);
 }
@@ -335,34 +335,34 @@ void ModeChad::run(){
     bool transmition(sub.chad.transmit(dx, dy, dz, dt));
     // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
 
+    if (dt >= 1000){
+        // disarm the engine, alert the user and exit immediately
+        sub.motors.armed(false); 
+        GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1sec => Motors disarmed.");
+        return; 
+    }
+
     // Réception du capteur. Contrôle ssi nouvelle update reçue
     if (transmition && dt<1000){
-
-        // std::cout << "CHAD : Coucou j'entre dans la condition if" << std::endl;
 
         // màj 
         last_instruction_date = AP_HAL::millis();
 
         // Changement de référentiel 
-        std::cout << "CHAD : Coucou j'ai reçu " << dx << ", " << dy << ", " << dz << ", " << dt << std::endl;
         Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
 
-        // Asservissement du système
-        
+        // Asservissement de la position
         PID_servo(measure_camera_straight, dt, F);
 
-        std::cout << "CHAD : le PID renvoie : " << F_lateral << ", " << F_throttle << ", " << F_forward << std::endl;
-
-        // Preprocess
+        // Scaling des instructions
         F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
 
         F_lateral = constrain_float(F_lateral, -1.f, 1.f);
         F_throttle = constrain_float(F_throttle, 0.f, 1.f);
         F_forward = constrain_float(F_forward, -1.f, 1.f);
+
+        // Transmission des instructions moteur
         
-        std::cout << "CHAD : J'applique aux moteurs : " << F_lateral << ", " << F_forward << ", " << F_throttle << std::endl;
-
-
         motors.set_forward(F_forward); // set_forward = vers l'avant (entre -1 et 1)
         motors.set_lateral(F_lateral); // set_lateral = vers la gauche (entre -1 et 1)
         motors.set_throttle(F_throttle); // set_throttle = vers le haut (entre 0 et 1)
