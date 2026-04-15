@@ -309,7 +309,7 @@ void ModeChad::run(){
     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
     
-    //angle_control_run();
+    angle_control_run();
 
 
 
