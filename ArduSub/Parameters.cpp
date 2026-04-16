@@ -543,6 +543,27 @@ const AP_Param::Info Sub::var_info[] = {
     // @User: Advanced
     GSCALAR(Dz,  "DERIV_CHAD_Z", 1.0),
 
+    // @Param: CHAD_ROLL_CTRL_THRESHOLD
+    // @DisplayName: Roll control threshold
+    // @Description: Maximum roll error allowed to control position
+    // @Values: int
+    // @User: Advanced
+    GSCALAR(roll_ctrl_threshold,  "CHAD_ROLL_CTRL_THRESHOLD", 50),
+
+    // @Param: CHAD_PITCH_CTRL_THRESHOLD
+    // @DisplayName: Pitch control threshold
+    // @Description: Maximum pitch error allowed to control position
+    // @Values: int
+    // @User: Advanced
+    GSCALAR(pitch_ctrl_threshold,  "CHAD_PITCH_CTRL_THRESHOLD", 300),
+
+    // @Param: CHAD_YAW_CTRL_THRESHOLD
+    // @DisplayName: Yaw control threshold
+    // @Description: Maximum yaw error allowed to control position
+    // @Values: int
+    // @User: Advanced
+    GSCALAR(yaw_ctrl_threshold,  "CHAD_YAW_CTRL_THRESHOLD", 36000),
+
 
 
 

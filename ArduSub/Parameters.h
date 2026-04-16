@@ -250,6 +250,13 @@ public:
         k_param_pilot_speed,
 
         k_param_vehicle = 257, // vehicle common block of parameters
+
+        // CHAD MODE n°2 - angle control limits
+        
+        k_param_roll_ctrl_threshold = 258,
+        k_param_pitch_ctrl_threshold = 259,
+        k_param_yaw_ctrl_threshold = 260
+
     };
 
     AP_Int16        format_version;
@@ -367,6 +374,10 @@ public:
     AP_Float        Dx;
     AP_Float        Dy;
     AP_Float        Dz;
+
+    AP_Int32        roll_ctrl_threshold;
+    AP_Int32        pitch_ctrl_threshold;
+    AP_Int32        yaw_ctrl_threshold;
 
     //////////////////////////////////////////
 
