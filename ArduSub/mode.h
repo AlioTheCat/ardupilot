@@ -221,6 +221,8 @@ protected:
 
     // trying to replicate guided mode's angle control
     void angle_control_start();
+    bool control_effective();
+    float remap_angle_diff(float val);
     void angle_control_run();
     void set_auto_yaw_mode(autopilot_yaw_mode yaw_mode);
 

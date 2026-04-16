@@ -54,6 +54,23 @@ void ModeChad::angle_control_start()
     // set_auto_yaw_mode(AUTO_YAW_HOLD);
 }
 
+float ModeChad::remap_angle_diff(float val){
+    if (val>18000){
+        return (36000 - val);
+    }
+    else {
+        return val;
+    }
+}
+
+bool ModeChad::control_effective(){
+    float roll_diff = remap_angle_diff( guided_angle_state.roll_cd - ahrs.roll_sensor );
+    float pitch_diff = remap_angle_diff( guided_angle_state.roll_cd - ahrs.pitch_sensor );
+    float yaw_diff = remap_angle_diff( guided_angle_state.roll_cd - ahrs.yaw_sensor );
+    std::cout << "roll diff : " << roll_diff << ", pitch_diff : " << pitch_diff << ", yaw_diff : " << yaw_diff << std::endl; 
+    return abs(roll_diff) > 50 || abs(pitch_diff) > 300; //|| abs(yaw_diff) > 2000;
+}
+
 void ModeChad::angle_control_run()
 {
     // if motors not enabled set throttle to zero and exit immediately
@@ -210,129 +227,6 @@ void ModeChad::set_auto_yaw_mode(autopilot_yaw_mode yaw_mode)
     }
 }
 
-////////////////////////////////     POS CONTROL    ////////////////////////////////
-
-// // initialise guided mode's position controller
-// void ModeChad::pos_control_start()
-// {
-//     // initialise waypoint controller
-//     sub.wp_nav.wp_and_spline_init();
-
-//     // initialise wpnav to stopping point at current altitude
-//     // To-Do: set to current location if disarmed?
-//     // To-Do: set to stopping point altitude?
-//     Vector3f stopping_point;
-//     sub.wp_nav.get_wp_stopping_point(stopping_point);
-
-//     // no need to check return status because terrain data is not used
-//     sub.wp_nav.set_wp_destination(stopping_point, false);
-// }
-
-// // pos_control_run - runs the guided position controller
-// // called from guided_run
-// void ModeChad::pos_control_run()
-// {
-//     // // if motors not enabled set throttle to zero and exit immediately
-//     // if (!motors.armed()) {
-//     //     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::GROUND_IDLE);
-//     //     // Sub vehicles do not stabilize roll/pitch/yaw when disarmed
-//     //     attitude_control->set_throttle_out(0,true,g.throttle_filt);
-//     //     attitude_control->relax_attitude_controllers();
-//     //     sub.wp_nav.wp_and_spline_init();
-//     //     return;
-//     // }
-
-//     // // process pilot's yaw input
-//     // float target_yaw_rate = 0;
-//     // if (!sub.failsafe.pilot_input) {
-//     //     // get pilot's desired yaw rate
-//     //     target_yaw_rate = sub.get_pilot_desired_yaw_rate(channel_yaw->get_control_in());
-//     //     if (!is_zero(target_yaw_rate)) {
-//     //         set_auto_yaw_mode(AUTO_YAW_HOLD);
-//     //     } else{
-//     //         if (sub.yaw_rate_only){
-//     //             set_auto_yaw_mode(AUTO_YAW_RATE);
-//     //         } else{
-//     //             set_auto_yaw_mode(AUTO_YAW_LOOK_AT_HEADING);
-//     //         }
-//     //     }
-//     // }
-
-//     // set motors to full range
-//     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
-
-//     // run waypoint controller
-//     sub.failsafe_terrain_set_status(sub.wp_nav.update_wpnav());
-
-//     float lateral_out, forward_out;
-//     sub.translate_wpnav_rp(lateral_out, forward_out);
-
-//     // Send to forward/lateral outputs
-//     motors.set_lateral(lateral_out);
-//     motors.set_forward(forward_out);
-
-//     // WP_Nav has set the vertical position control targets
-//     // run the vertical position controller and set output throttle
-//     position_control->update_z_controller();
-
-//     // // call attitude controller
-//     // if (sub.auto_yaw_mode == AUTO_YAW_HOLD) {
-//     //     // roll & pitch & yaw rate from pilot
-//     //     attitude_control->input_euler_angle_roll_pitch_euler_rate_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), target_yaw_rate);
-//     // } else if (sub.auto_yaw_mode == AUTO_YAW_LOOK_AT_HEADING) {
-//     //     // roll, pitch from pilot, yaw & yaw_rate from auto_control
-//     //     target_yaw_rate = sub.yaw_look_at_heading_slew * 100.0;
-//     //     attitude_control->input_euler_angle_roll_pitch_slew_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), get_auto_heading(), target_yaw_rate);
-//     // } else if (sub.auto_yaw_mode == AUTO_YAW_RATE) {
-//     //     // roll, pitch from pilot, yaw_rate from auto_control
-//     //     target_yaw_rate = sub.yaw_look_at_heading_slew * 100.0;
-//     //     attitude_control->input_euler_angle_roll_pitch_euler_rate_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), target_yaw_rate);
-//     // } else {
-//     //     // roll, pitch from pilot, yaw heading from auto_heading()
-//     //     attitude_control->input_euler_angle_roll_pitch_yaw(channel_roll->get_control_in(), channel_pitch->get_control_in(), get_auto_heading(), true);
-//     // }
-// }
-
-// // set_destination - sets guided mode's target destination
-// // Returns true if the fence is enabled and guided waypoint is within the fence
-// // else return false if the waypoint is outside the fence
-// bool ModeChad::set_destination(const Vector3f& destination)
-// {
-// #if AP_FENCE_ENABLED
-//     // reject destination if outside the fence
-//     const Location dest_loc(destination, Location::AltFrame::ABOVE_ORIGIN);
-//     if (!sub.fence.check_destination_within_fence(dest_loc)) {
-//         LOGGER_WRITE_ERROR(LogErrorSubsystem::NAVIGATION, LogErrorCode::DEST_OUTSIDE_FENCE);
-//         // failure is propagated to GCS with NAK
-//         return false;
-//     }
-// #endif
-
-//     // ensure we are in position control mode
-//     if (sub.guided_mode != Guided_WP) {
-//         pos_control_start();
-//     }
-
-//     // no need to check return status because terrain data is not used
-//     sub.wp_nav.set_wp_destination(destination, false);
-
-// #if HAL_LOGGING_ENABLED
-//     // log target
-//     sub.Log_Write_GuidedTarget(sub.guided_mode, destination, Vector3f());
-// #endif
-
-//     return true;
-// }
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-//////////////////////          END OF EXPERIMENTAL         ////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
 /* Computes force to apply from measurement */
 void ModeChad::PID_servo(Vector3<float> measure, int dt, Vector3<float>& F){
     // PID parameters in straight camera coordinate system
@@ -368,64 +262,65 @@ void ModeChad::run(){
 
     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
-    
-    angle_control_run();
-
-
-
-    // Assumption : the vfov is oriented downwards.
-    
-    float vfov = AP_CHAD_ANGLE; // = - camera_backend.vertical_fov()
-                                // orienté vers le haut
-                                // -40° (-0.69813) ou 0°
-
-    
-
-    Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
-
-    Vector3<float> measure = {0.f, 0.f, 0.f};
-    float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
-    int dt=0;
-
-    // std::cout << "CHAD : Coucou j'entre dans la fonction run";
-
-    Vector3<float> F = {0.f, 0.f, 0.f};
-    float& F_lateral (F[0]); float& F_throttle (F[1]); float& F_forward (F[2]); // force to apply to the ROV to control translation
-
-    bool transmition(sub.chad.transmit(dx, dy, dz, dt));
-    // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
-
-    if (dt >= 1000){
-        // disarm the engine, alert the user and exit immediately
-        sub.motors.armed(false); 
-        GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1sec => Motors disarmed.");
-        return; 
+    if (control_effective()) {
+        angle_control_run();
     }
+    else {
 
-    // Réception du capteur. Contrôle ssi nouvelle update reçue
-    if (transmition && dt<1000){
+        angle_control_run();
 
-        // màj 
-        last_instruction_date = AP_HAL::millis();
-
-        // Changement de référentiel 
-        Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
-
-        // Asservissement de la position
-        PID_servo(measure_camera_straight, dt, F);
-
-        // Scaling des instructions
-        F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
-
-        F_lateral = constrain_float(F_lateral, -1.f, 1.f);
-        F_throttle = constrain_float(F_throttle, 0.f, 1.f);
-        F_forward = constrain_float(F_forward, -1.f, 1.f);
-
-        // Transmission des instructions moteur
+        // Assumption : the vfov is oriented downwards.
         
-        motors.set_forward(F_forward); // set_forward = vers l'avant (entre -1 et 1)
-        motors.set_lateral(F_lateral); // set_lateral = vers la gauche (entre -1 et 1)
-        motors.set_throttle(F_throttle); // set_throttle = vers le haut (entre 0 et 1)
-    };
+        float vfov = AP_CHAD_ANGLE; // = - camera_backend.vertical_fov()
+                                    // orienté vers le haut
+                                    // -40° (-0.69813) ou 0°
+
+        Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
+
+        Vector3<float> measure = {0.f, 0.f, 0.f};
+        float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
+        int dt=0;
+
+        // std::cout << "CHAD : Coucou j'entre dans la fonction run";
+
+        Vector3<float> F = {0.f, 0.f, 0.f};
+        float& F_lateral (F[0]); float& F_throttle (F[1]); float& F_forward (F[2]); // force to apply to the ROV to control translation
+
+        bool transmition(sub.chad.transmit(dx, dy, dz, dt));
+        // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
+
+        if (false){ //timeout()
+            // disarm the engine, alert the user and exit immediately
+            sub.motors.armed(false); 
+            GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1sec => Motors disarmed.");
+            return; 
+        }
+
+        // Réception du capteur. Contrôle ssi nouvelle update reçue
+        if (transmition && dt<1000){
+
+            // màj 
+            last_instruction_date = AP_HAL::millis();
+
+            // Changement de référentiel 
+            Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
+
+            // Asservissement de la position
+            PID_servo(measure_camera_straight, dt, F);
+
+            // Scaling des instructions
+            F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
+
+            F_lateral = constrain_float(F_lateral, -1.f, 1.f);
+            F_throttle = constrain_float(F_throttle, 0.f, 1.f);
+            F_forward = constrain_float(F_forward, -1.f, 1.f);
+
+            // Transmission des instructions moteur
+            
+            motors.set_forward(F_forward); // set_forward = vers l'avant (entre -1 et 1)
+            motors.set_lateral(F_lateral); // set_lateral = vers la gauche (entre -1 et 1)
+            motors.set_throttle(F_throttle); // set_throttle = vers le haut (entre 0 et 1)
+        };
+    }
 }
 
