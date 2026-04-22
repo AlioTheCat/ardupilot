@@ -69,11 +69,11 @@ bool ModeChad::pos_servo_authorized(){
     float yaw_diff = remap_angle_diff( guided_angle_state.yaw_cd - ahrs.yaw_sensor );
     std::cout << "roll diff : " << roll_diff << ", pitch_diff : " << pitch_diff << ", yaw_diff : " << yaw_diff << std::endl; 
     
-    return (abs(roll_diff) < g2.roll_ctrl_threshold 
+    return (abs(roll_diff) < g.roll_ctrl_threshold 
             && 
-            abs(pitch_diff) < g2.pitch_ctrl_threshold
+            abs(pitch_diff) < g.pitch_ctrl_threshold
             &&
-            abs(yaw_diff) < g2.yaw_ctrl_threshold);
+            abs(yaw_diff) < g.yaw_ctrl_threshold);
 }
 
 void ModeChad::angle_control_run()
@@ -172,17 +172,17 @@ void ModeChad::set_auto_yaw_mode(autopilot_yaw_mode yaw_mode)
 /* Computes force to apply from measurement */
 void ModeChad::PID_servo(Vector3<float> measure, int dt, Vector3<float>& F){
     // PID parameters in straight camera coordinate system
-    PIDx.set_kP(g2.Px);
-    PIDx.set_kI(g2.Ix);
-    PIDx.set_kD(g2.Dx);
+    PIDx.set_kP(g.Px);
+    PIDx.set_kI(g.Ix);
+    PIDx.set_kD(g.Dx);
 
-    PIDy.set_kP(g2.Py);
-    PIDy.set_kI(g2.Iy);
-    PIDy.set_kD(g2.Dy);
+    PIDy.set_kP(g.Py);
+    PIDy.set_kI(g.Iy);
+    PIDy.set_kD(g.Dy);
 
-    PIDz.set_kP(g2.Pz);
-    PIDz.set_kI(g2.Iz);
-    PIDz.set_kD(g2.Dz);
+    PIDz.set_kP(g.Pz);
+    PIDz.set_kI(g.Iz);
+    PIDz.set_kD(g.Dz);
 
     F[0] = - PIDx.update_all(0, measure[0], dt*1e-3); // horizontal axis goes from right (-1) to left (1)
     F[1] = PIDy.update_all(0, measure[1], dt*1e-3);
@@ -214,7 +214,7 @@ void ModeChad::run(){
 
     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
-    if (g2.angle_ctrl_active == 1)
+    if (g.angle_ctrl_active == 1)
         {angle_control_run();}
 
     if (pos_servo_authorized()){

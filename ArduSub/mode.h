@@ -213,9 +213,9 @@ protected:
     Mode::Number number() const override { return Mode::Number::CHAD; }
 
     // PID for axes x = forward, y = left, z = up 
-        AC_PID PIDx{g2.Px, g2.Ix, g2.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
-        AC_PID PIDy{g2.Py, g2.Iy, g2.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
-        AC_PID PIDz{g2.Pz, g2.Iz, g2.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
+        AC_PID PIDx{g.Px, g.Ix, g.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
+        AC_PID PIDy{g.Py, g.Iy, g.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
+        AC_PID PIDz{g.Pz, g.Iz, g.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
 
     void PID_servo(Vector3<float> target, int dt, Vector3<float>& F); // Computes force to apply from CPU measurements 
 
