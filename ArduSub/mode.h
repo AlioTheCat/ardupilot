@@ -235,6 +235,7 @@ protected:
 
 private:
     bool timeout();
+    int zizi = 0;
 };
 
 

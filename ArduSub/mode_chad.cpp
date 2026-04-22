@@ -215,7 +215,11 @@ void ModeChad::run(){
     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
     if (g.angle_ctrl_active == 1)
-        {angle_control_run();}
+        {
+        if (zizi++ == 0)
+            {GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "ANGLE CTRL IS ACTIVE");}
+        angle_control_run();
+    }
 
     if (pos_servo_authorized()){
 
