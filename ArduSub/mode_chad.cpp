@@ -244,7 +244,6 @@ void ModeChad::run(){
     bool transmition(sub.chad.transmit(dx, dy, dz, dt, status));
     // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
     
-    
     if (status==1.0) // Reference frame reset requested
     {
         // Resets the target attitude
@@ -254,6 +253,14 @@ void ModeChad::run(){
 
         GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD : Target attitude reset (CPU : reference frame reset)");
     }
+
+    // Changement de base prenant en compte les angles mesurés par l'IMU
+
+    Quaternion adapt_coordinate_system; adapt_coordinate_system.from_euler(
+                                                                            -remap_angle_diff(guided_angle_state.pitch_cd - ahrs.pitch_sensor),
+                                                                            -remap_angle_diff(guided_angle_state.yaw_cd - ahrs.yaw_sensor),
+                                                                            remap_angle_diff(guided_angle_state.roll_cd - ahrs.roll_sensor)
+                                                                           );
 
     if (pos_servo_authorized()){
         
@@ -265,8 +272,11 @@ void ModeChad::run(){
             // Changement de référentiel 
             Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
 
+            // Adaptation aux données de l'IMU
+            Vector3<float> measure_rotated_with_IMU = (adapt_coordinate_system) * measure_camera_straight;
+
             // Asservissement de la position
-            PID_servo(measure_camera_straight, dt, F);
+            PID_servo(measure_rotated_with_IMU, dt, F);
 
             // Scaling des instructions
             F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
