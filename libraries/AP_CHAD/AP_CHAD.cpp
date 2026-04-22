@@ -45,9 +45,10 @@ void AP_CHAD::read()
     if (len > 0) {
         if (len == sizeof(buffer)) {
 
-            memcpy(&dx, buffer  , 4);
-            memcpy(&dy, buffer+4, 4);
-            memcpy(&dz, buffer+8, 4);
+            memcpy(&dx,     buffer  , 4);
+            memcpy(&dy,     buffer+4, 4);
+            memcpy(&dz,     buffer+8, 4);
+            memcpy(&status, buffer+12, 4);
 
             //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", dx, dy, dz);
 
@@ -65,7 +66,7 @@ void AP_CHAD::read()
     }
 }
 
-bool AP_CHAD::transmit(float& _dx, float& _dy, float& _dz, int& _dt) {
+bool AP_CHAD::transmit(float& _dx, float& _dy, float& _dz, int& _dt, float& _status) {
     // Returns false if this update is not new
     if (new_update){
         new_update = false;
@@ -73,6 +74,7 @@ bool AP_CHAD::transmit(float& _dx, float& _dy, float& _dz, int& _dt) {
         _dy = dy;
         _dz = dz;
         _dt = last_delta_time;
+        _status = status;
         return true;
     }
     return false;

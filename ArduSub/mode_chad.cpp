@@ -223,27 +223,40 @@ void ModeChad::run(){
         angle_control_run();
     }
 
-    if (pos_servo_authorized()){
-
-        // Assumption : the vfov is oriented downwards.
+    // Assumption : the vfov is oriented downwards.
         
-        float vfov = AP_CHAD_ANGLE; // = - camera_backend.vertical_fov()
-                                    // orienté vers le haut
-                                    // -40° (-0.69813) ou 0°
+    float vfov = AP_CHAD_ANGLE; // = - camera_backend.vertical_fov()
+                                // orienté vers le haut
+                                // -40° (-0.69813) ou 0°
 
-        Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
+    Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
 
-        Vector3<float> measure = {0.f, 0.f, 0.f};
-        float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
-        int dt=0;
+    Vector3<float> measure = {0.f, 0.f, 0.f};
+    float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
+    int dt=0;
+    float status = 0.0;
 
-        // std::cout << "CHAD : Coucou j'entre dans la fonction run";
+    // std::cout << "CHAD : Coucou j'entre dans la fonction run";
 
-        Vector3<float> F = {0.f, 0.f, 0.f};
-        float& F_lateral (F[0]); float& F_throttle (F[1]); float& F_forward (F[2]); // force to apply to the ROV to control translation
+    Vector3<float> F = {0.f, 0.f, 0.f};
+    float& F_lateral (F[0]); float& F_throttle (F[1]); float& F_forward (F[2]); // force to apply to the ROV to control translation
 
-        bool transmition(sub.chad.transmit(dx, dy, dz, dt));
-        // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
+    bool transmition(sub.chad.transmit(dx, dy, dz, dt, status));
+    // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
+    
+    
+    if (status==1.0) // Reference frame reset requested
+    {
+        // Resets the target attitude
+        guided_angle_state.roll_cd = ahrs.roll_sensor;
+        guided_angle_state.pitch_cd = ahrs.pitch_sensor;
+        guided_angle_state.yaw_cd = ahrs.yaw_sensor;
+
+        GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD : Target attitude reset (CPU : reference frame reset)");
+    }
+
+    if (pos_servo_authorized()){
+        
         
 
         // Réception du capteur. Contrôle ssi nouvelle update reçue
