@@ -78,4 +78,6 @@ bool AP_CHAD::transmit(float& _dx, float& _dy, float& _dz, int& _dt) {
     return false;
 }
 
+uint32_t AP_CHAD::get_last_update_time() { return last_update; }
+
 #endif

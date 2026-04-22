@@ -168,23 +168,6 @@ public:
         k_param_p_vel_z, // deprecated
         k_param_pid_accel_z, // deprecated
 
-        ////////////////////////////////////////
-        // CHAD MODE --> possiblement de la merde
-        
-        k_param_Px,
-        k_param_Py,
-        k_param_Pz,
-
-        k_param_Ix,
-        k_param_Iy,
-        k_param_Iz,
-
-        k_param_Dx,
-        k_param_Dy,
-        k_param_Dz, //139
-
-        ////////////////////////////////////////
-
         // Failsafes
         k_param_failsafe_gcs = 140,
         k_param_failsafe_leak, // leak failsafe behavior
@@ -249,13 +232,7 @@ public:
         k_param_surftrak_depth,
         k_param_pilot_speed,
 
-        k_param_vehicle = 257, // vehicle common block of parameters
-
-        // CHAD MODE n°2 - angle control limits
-        
-        k_param_roll_ctrl_threshold = 258,
-        k_param_pitch_ctrl_threshold = 259,
-        k_param_yaw_ctrl_threshold = 260
+        k_param_vehicle = 257 // vehicle common block of parameters
 
     };
 
@@ -362,25 +339,6 @@ public:
     AP_Int8         acro_trainer;
     AP_Float        acro_expo;
 
-    //////////////////////////////////////////
-    // CHAD Mode --> POSSIBLEMENT DE LA MERDE
-     
-    AP_Float        Px;
-    AP_Float        Py;
-    AP_Float        Pz;
-    AP_Float        Ix;
-    AP_Float        Iy;
-    AP_Float        Iz;
-    AP_Float        Dx;
-    AP_Float        Dy;
-    AP_Float        Dz;
-
-    AP_Int32        roll_ctrl_threshold;
-    AP_Int32        pitch_ctrl_threshold;
-    AP_Int32        yaw_ctrl_threshold;
-
-    //////////////////////////////////////////
-
     AP_Float                surface_depth;
     AP_Int8                 frame_configuration;
 
@@ -415,6 +373,24 @@ public:
     AP_Float backup_origin_lat;
     AP_Float backup_origin_lon;
     AP_Float backup_origin_alt;
+
+    // CHAD Mode
+     
+    AP_Float        Px;
+    AP_Float        Py;
+    AP_Float        Pz;
+    AP_Float        Ix;
+    AP_Float        Iy;
+    AP_Float        Iz;
+    AP_Float        Dx;
+    AP_Float        Dy;
+    AP_Float        Dz;
+
+    AP_Float        roll_ctrl_threshold;
+    AP_Float        pitch_ctrl_threshold;
+    AP_Float        yaw_ctrl_threshold;
+
+    AP_Int8         angle_ctrl_active;
 };
 
 extern const AP_Param::Info        var_info[];

@@ -69,11 +69,11 @@ bool ModeChad::pos_servo_authorized(){
     float yaw_diff = remap_angle_diff( guided_angle_state.yaw_cd - ahrs.yaw_sensor );
     std::cout << "roll diff : " << roll_diff << ", pitch_diff : " << pitch_diff << ", yaw_diff : " << yaw_diff << std::endl; 
     
-    return (abs(roll_diff) < g.roll_ctrl_threshold 
+    return (abs(roll_diff) < g2.roll_ctrl_threshold 
             && 
-            abs(pitch_diff) < g.pitch_ctrl_threshold
+            abs(pitch_diff) < g2.pitch_ctrl_threshold
             &&
-            abs(yaw_diff) < g.yaw_ctrl_threshold);
+            abs(yaw_diff) < g2.yaw_ctrl_threshold);
 }
 
 void ModeChad::angle_control_run()
@@ -172,27 +172,37 @@ void ModeChad::set_auto_yaw_mode(autopilot_yaw_mode yaw_mode)
 /* Computes force to apply from measurement */
 void ModeChad::PID_servo(Vector3<float> measure, int dt, Vector3<float>& F){
     // PID parameters in straight camera coordinate system
-    PIDx.set_kP(g.Px);
-    PIDx.set_kI(g.Ix);
-    PIDx.set_kD(g.Dx);
+    PIDx.set_kP(g2.Px);
+    PIDx.set_kI(g2.Ix);
+    PIDx.set_kD(g2.Dx);
 
-    PIDy.set_kP(g.Py);
-    PIDy.set_kI(g.Iy);
-    PIDy.set_kD(g.Dy);
+    PIDy.set_kP(g2.Py);
+    PIDy.set_kI(g2.Iy);
+    PIDy.set_kD(g2.Dy);
 
-    PIDz.set_kP(g.Pz);
-    PIDz.set_kI(g.Iz);
-    PIDz.set_kD(g.Dz);
+    PIDz.set_kP(g2.Pz);
+    PIDz.set_kI(g2.Iz);
+    PIDz.set_kD(g2.Dz);
 
     F[0] = - PIDx.update_all(0, measure[0], dt*1e-3); // horizontal axis goes from right (-1) to left (1)
     F[1] = PIDy.update_all(0, measure[1], dt*1e-3);
     F[2] = PIDz.update_all(0, measure[2], dt*1e-3);
 }
 
+bool ModeChad::timeout() { return AP_HAL::millis()-sub.chad.get_last_update_time() > 1000; }
+
 
 // manual_run - runs the manual (passthrough) controller
 // should be called at 5hz or more
 void ModeChad::run(){
+
+    // check if connection with CPU still holds, otherwise disarm and alert the user
+    if (timeout() && sub.motors.armed()){
+            sub.motors.armed(false); 
+            sub.motors.output();
+            GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1 sec => Motors disarmed.");
+            return; 
+    }
 
     // if not armed set throttle to zero and exit immediately
     if (!sub.motors.armed()) {
@@ -204,8 +214,8 @@ void ModeChad::run(){
 
     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
-    
-    angle_control_run();
+    if (g2.angle_ctrl_active == 1)
+        {angle_control_run();}
 
     if (pos_servo_authorized()){
 
@@ -228,19 +238,10 @@ void ModeChad::run(){
 
         bool transmition(sub.chad.transmit(dx, dy, dz, dt));
         // std :: cout << " dx : " << dx << ", dy : " << dy << ", dz : " << dz << ", dt : " << dt << ", transmit : " << transmition << std::endl;
-
-        if (false){ //timeout()
-            // disarm the engine, alert the user and exit immediately
-            sub.motors.armed(false); 
-            GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1sec => Motors disarmed.");
-            return; 
-        }
+        
 
         // Réception du capteur. Contrôle ssi nouvelle update reçue
-        if (transmition && dt<1000){
-
-            // màj 
-            last_instruction_date = AP_HAL::millis();
+        if (transmition){
 
             // Changement de référentiel 
             Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
@@ -261,6 +262,10 @@ void ModeChad::run(){
             motors.set_lateral(F_lateral); // set_lateral = vers la gauche (entre -1 et 1)
             motors.set_throttle(F_throttle); // set_throttle = vers le haut (entre 0 et 1)
         }
+    } else {
+        motors.set_forward(0);
+        motors.set_lateral(0);
+        motors.set_throttle(0.5);
     }
 }
 

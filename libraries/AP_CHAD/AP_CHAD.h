@@ -25,6 +25,8 @@ public:
         last_update = tmp;
     }
 
+    uint32_t get_last_update_time();
+
 private:
     SocketAPM *socket;
     char buffer[12];
