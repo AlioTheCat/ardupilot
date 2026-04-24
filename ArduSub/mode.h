@@ -238,7 +238,6 @@ protected:
 
 private:
     bool timeout();
-
 };
 
 
