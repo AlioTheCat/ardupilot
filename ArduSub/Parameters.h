@@ -407,9 +407,9 @@ public:
     AP_Float backup_origin_alt;
 
     // CHAD mode
-    AP_Float roll_ctrl_threshold;
-    AP_Float pitch_ctrl_threshold;
-    AP_Float yaw_ctrl_threshold;
+    //AP_Float roll_ctrl_threshold;
+    //AP_Float pitch_ctrl_threshold;
+    //AP_Float yaw_ctrl_threshold;
     AP_Float angle_ctrl_active;
 };
 

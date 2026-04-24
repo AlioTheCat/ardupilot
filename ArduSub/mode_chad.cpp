@@ -69,11 +69,11 @@ bool ModeChad::pos_servo_authorized(){
     float yaw_diff = remap_angle_diff( guided_angle_state.yaw_cd - ahrs.yaw_sensor );
     std::cout << "roll diff : " << roll_diff << ", pitch_diff : " << pitch_diff << ", yaw_diff : " << yaw_diff << std::endl; 
     
-    return (abs(roll_diff) < g2.roll_ctrl_threshold 
-            && 
-            abs(pitch_diff) < g2.pitch_ctrl_threshold
-            &&
-            abs(yaw_diff) < g2.yaw_ctrl_threshold);
+    return false;//(abs(roll_diff) < g2.roll_ctrl_threshold 
+           // && 
+           // abs(pitch_diff) < g2.pitch_ctrl_threshold
+           // &&
+           // abs(yaw_diff) < g2.yaw_ctrl_threshold);
 }
 
 void ModeChad::angle_control_run()
