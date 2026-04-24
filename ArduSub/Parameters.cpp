@@ -846,9 +846,9 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @User: Standard
     AP_GROUPINFO("ORIGIN_ALT", 21, ParametersG2, backup_origin_alt, 0),
 
-    AP_GROUPINFO("CHAD_ROLL_THRESHOLD", 40, ParametersG2, roll_ctrl_threshold, 300.0f),
-    AP_GROUPINFO("CHAD_PITCH_THRESHOLD", 41, ParametersG2, pitch_ctrl_threshold, 300.0f),
-    AP_GROUPINFO("CHAD_YAW_THRESHOLD", 42, ParametersG2, yaw_ctrl_threshold, 300.0f),
+    //AP_GROUPINFO("CHAD_ROLL_THRESHOLD", 40, ParametersG2, roll_ctrl_threshold, 300.0f),
+    //AP_GROUPINFO("CHAD_PITCH_THRESHOLD", 41, ParametersG2, pitch_ctrl_threshold, 300.0f),
+    //AP_GROUPINFO("CHAD_YAW_THRESHOLD", 42, ParametersG2, yaw_ctrl_threshold, 300.0f),
     AP_GROUPINFO("CHAD_ANGLE_CTRL_ACTIVE", 43, ParametersG2, angle_ctrl_active, 1.0f),
 
     AP_GROUPEND
