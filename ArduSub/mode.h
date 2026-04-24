@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Sub.h"
+#include <AP_CHAD/AP_CHAD_Parameters.h>
 class Parameters;
 class ParametersG2;
 
@@ -197,6 +198,7 @@ class ModeChad : public Mode
 {
 
 public:
+
     // inherit constructor
     using Mode::Mode;
     virtual void run() override;
@@ -206,6 +208,7 @@ public:
     bool allows_arming(bool from_gcs) const override { return true; }
     bool is_autopilot() const override { return false; } // à checker aussi
 
+
 protected:
 
     const char *name() const override { return "CHAD"; }
@@ -213,9 +216,9 @@ protected:
     Mode::Number number() const override { return Mode::Number::CHAD; }
 
     // PID for axes x = forward, y = left, z = up 
-        AC_PID PIDx{g.Px, g.Ix, g.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
-        AC_PID PIDy{g.Py, g.Iy, g.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
-        AC_PID PIDz{g.Pz, g.Iz, g.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
+        AC_PID PIDx{g2.chad_params.Px, g2.chad_params.Ix, g2.chad_params.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
+        AC_PID PIDy{g2.chad_params.Py, g2.chad_params.Iy, g2.chad_params.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
+        AC_PID PIDz{g2.chad_params.Pz, g2.chad_params.Iz, g2.chad_params.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
 
     void PID_servo(Vector3<float> target, int dt, Vector3<float>& F); // Computes force to apply from CPU measurements 
 
@@ -235,6 +238,7 @@ protected:
 
 private:
     bool timeout();
+
 };
 
 
