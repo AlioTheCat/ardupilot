@@ -548,28 +548,28 @@ const AP_Param::Info Sub::var_info[] = {
     // @Description: Maximum roll error allowed to control position
     // @Values: float
     // @User: Advanced
-    GSCALAR(roll_ctrl_threshold,  "CHAD_ROLL_CTRL_THRESHOLD", 300.0), // centidegrees
+    //GSCALAR(roll_ctrl_threshold,  "CHAD_ROLL_CTRL_THRESHOLD", 300.0), // centidegrees
 
     // @Param: CHAD_PITCH_CTRL_THRESHOLD
     // @DisplayName: Pitch control threshold
     // @Description: Maximum pitch error allowed to control position
     // @Values: float
     // @User: Advanced
-    GSCALAR(pitch_ctrl_threshold,  "CHAD_PITCH_CTRL_THRESHOLD", 300.0),
+    //GSCALAR(pitch_ctrl_threshold,  "CHAD_PITCH_CTRL_THRESHOLD", 300.0),
 
     // @Param: CHAD_YAW_CTRL_THRESHOLD
     // @DisplayName: Yaw control threshold
     // @Description: Maximum yaw error allowed to control position
     // @Values: float
     // @User: Advanced
-    GSCALAR(yaw_ctrl_threshold,  "CHAD_YAW_CTRL_THRESHOLD", 300.0),
+    //GSCALAR(yaw_ctrl_threshold,  "CHAD_YAW_CTRL_THRESHOLD", 300.0),
 
     // @Param: CHAD_ANGLE_CTRL_ACTIVE
     // @DisplayName: Angle ctrl active
     // @Description: Chad mode angle control is active
     // @Values: 0:Disabled,1:Enabled
     // @User: Advanced
-    GSCALAR(angle_ctrl_active,  "CHAD_ANGLE_CTRL_ACTIVE", CHAD_ATTITUDE_CONTROL_ENABLED),
+    //GSCALAR(angle_ctrl_active,  "CHAD_ANGLE_CTRL_ACTIVE", CHAD_ATTITUDE_CONTROL_ENABLED),
     
 
 
@@ -845,6 +845,11 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @Units: m
     // @User: Standard
     AP_GROUPINFO("ORIGIN_ALT", 21, ParametersG2, backup_origin_alt, 0),
+
+    AP_GROUPINFO("CHAD_ROLL_THRESHOLD", 40, ParametersG2, roll_ctrl_threshold, 300.0f),
+    AP_GROUPINFO("CHAD_PITCH_THRESHOLD", 41, ParametersG2, pitch_ctrl_threshold, 300.0f),
+    AP_GROUPINFO("CHAD_YAW_THRESHOLD", 42, ParametersG2, yaw_ctrl_threshold, 300.0f),
+    AP_GROUPINFO("CHAD_ANGLE_CTRL_ACTIVE", 43, ParametersG2, angle_ctrl_active, 1.0f),
 
     AP_GROUPEND
 };
