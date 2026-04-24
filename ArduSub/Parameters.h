@@ -249,13 +249,6 @@ public:
         k_param_surftrak_depth,
         k_param_pilot_speed,
 
-
-        // CHAD MODE n°2 - angle control limits
-        k_param_roll_ctrl_threshold = 243,
-        k_param_pitch_ctrl_threshold = 244,
-        k_param_yaw_ctrl_threshold = 245,
-        k_param_angle_ctrl_active = 246,
-
         k_param_vehicle = 257 // vehicle common block of parameters
 
     };
@@ -364,7 +357,7 @@ public:
     AP_Float        acro_expo;
 
     //////////////////////////////////////////
-    // CHAD Mode --> POSSIBLEMENT DE LA MERDE
+    // CHAD Mode
      
     AP_Float        Px;
     AP_Float        Py;
@@ -375,12 +368,6 @@ public:
     AP_Float        Dx;
     AP_Float        Dy;
     AP_Float        Dz;
-
-    AP_Float        roll_ctrl_threshold;
-    AP_Float        pitch_ctrl_threshold;
-    AP_Float        yaw_ctrl_threshold;
-
-    AP_Int8         angle_ctrl_active;
 
     //////////////////////////////////////////
 
@@ -418,6 +405,12 @@ public:
     AP_Float backup_origin_lat;
     AP_Float backup_origin_lon;
     AP_Float backup_origin_alt;
+
+    // CHAD mode
+    AP_Float roll_ctrl_threshold;
+    AP_Float pitch_ctrl_threshold;
+    AP_Float yaw_ctrl_threshold;
+    AP_Float angle_ctrl_active;
 };
 
 extern const AP_Param::Info        var_info[];

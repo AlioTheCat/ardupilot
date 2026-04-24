@@ -18,7 +18,7 @@ struct {
 
 
 bool ModeChad::init(bool ignore_checks){
-    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Activation du mode (giga)chad ( ͡° ͜ʖ ͡°)");
+    GCS_SEND_TEXT(MAV_SEVERITY_INFO, "Activation du mode CHAD");
 
     // attitude hold inputs become thrust inputs in manual mode
     // set to neutral to prevent chaotic behavior (esp. roll/pitch)
@@ -69,11 +69,11 @@ bool ModeChad::pos_servo_authorized(){
     float yaw_diff = remap_angle_diff( guided_angle_state.yaw_cd - ahrs.yaw_sensor );
     std::cout << "roll diff : " << roll_diff << ", pitch_diff : " << pitch_diff << ", yaw_diff : " << yaw_diff << std::endl; 
     
-    return (abs(roll_diff) < g.roll_ctrl_threshold 
+    return (abs(roll_diff) < g2.roll_ctrl_threshold 
             && 
-            abs(pitch_diff) < g.pitch_ctrl_threshold
+            abs(pitch_diff) < g2.pitch_ctrl_threshold
             &&
-            abs(yaw_diff) < g.yaw_ctrl_threshold);
+            abs(yaw_diff) < g2.yaw_ctrl_threshold);
 }
 
 void ModeChad::angle_control_run()
@@ -214,12 +214,7 @@ void ModeChad::run(){
 
     motors.set_desired_spool_state(AP_Motors::DesiredSpoolState::THROTTLE_UNLIMITED);
 
-    if (g.angle_ctrl_active == 1)
-        {
-        if (zizi++ == 0)
-            {GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "ANGLE CTRL IS ACTIVE");}
-        angle_control_run();
-    }
+    if (g2.angle_ctrl_active == 1) angle_control_run();
 
     if (pos_servo_authorized()){
 
