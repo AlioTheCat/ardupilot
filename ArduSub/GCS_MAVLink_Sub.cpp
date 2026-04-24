@@ -1006,6 +1006,7 @@ uint8_t GCS_MAVLINK_Sub::send_available_mode(uint8_t index) const
         &sub.mode_circle,
         &sub.mode_surface,
         &sub.mode_motordetect,
+        &sub.mode_chad,
     };
 
     const uint8_t mode_count = ARRAY_SIZE(modes);

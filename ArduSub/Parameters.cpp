@@ -1,6 +1,7 @@
 #include "Sub.h"
 
 #include <AP_Gripper/AP_Gripper.h>
+#include <AP_CHAD/AP_CHAD_Parameters.h>
 
 /*
    This program is free software: you can redistribute it and/or modify
@@ -471,106 +472,7 @@ const AP_Param::Info Sub::var_info[] = {
     // @User: Advanced
     GSCALAR(acro_expo,  "ACRO_EXPO",    ACRO_EXPO_DEFAULT),
 
-    // variables not in the g class which contain EEPROM saved variables
-
-    
-
-    ///////////////////////////////////////////
-    //POSSIBLEMENT DE LA MERDE !!!!
-    //////////////////////////////////////////
-
-
-    // @Param: PROP_CHAD_X 
-    // @DisplayName: Prop x
-    // @Description: Proportional gain for x axis
-    // @Values: float 
-    // @User: Advanced
-    GSCALAR(Px,  "PROP_CHAD_X", 1.0),
-    
-    // @Param: PROP_CHAD_y
-    // @DisplayName: Prop y
-    // @Description: Proportional gain for y axis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Py,  "PROP_CHAD_Y", 1.0),
-    
-    // @Param: PROP_CHAD_Z
-    // @DisplayName: Prop z
-    // @Description: Proportional gain for z axis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Pz,  "PROP_CHAD_Z", 1.0),
-
-    // @Param: INT_CHAD_X
-    // @DisplayName: Int x
-    // @Description: Integral gain for x axis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Ix,  "INT_CHAD_X", 1.0),
-    
-    // @Param: INT_CHAD_y
-    // @DisplayName: Int y
-    // @Description: Integral gain for y ayis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Iy,  "INT_CHAD_Y", 1.0),
-    
-    // @Param: INT_CHAD_Z
-    // @DisplazName: Int z
-    // @Description: Integral gain for z azis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Iz,  "INT_CHAD_Z", 1.0),
-    
-    // @Param: DERIV_CHAD_X
-    // @DisplayName: Deriv x
-    // @Description: Derivative gain for x axis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Dx,  "DERIV_CHAD_X", 1.0),
-    
-    // @Param: DERIV_CHAD_y
-    // @DisplayName: Deriv y
-    // @Description: Derivative gain for y axis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Dy,  "DERIV_CHAD_Y", 1.0),
-    
-    // @Param: DERIV_CHAD_Z
-    // @DisplayName: Deriv z
-    // @Description: Derivative gain for z azis
-    // @Values: float
-    // @User: Advanced
-    GSCALAR(Dz,  "DERIV_CHAD_Z", 1.0),
-
-    // @Param: CHAD_ROLL_CTRL_THRESHOLD
-    // @DisplayName: Roll control threshold
-    // @Description: Maximum roll error allowed to control position
-    // @Values: float
-    // @User: Advanced
-    //GSCALAR(roll_ctrl_threshold,  "CHAD_ROLL_CTRL_THRESHOLD", 300.0), // centidegrees
-
-    // @Param: CHAD_PITCH_CTRL_THRESHOLD
-    // @DisplayName: Pitch control threshold
-    // @Description: Maximum pitch error allowed to control position
-    // @Values: float
-    // @User: Advanced
-    //GSCALAR(pitch_ctrl_threshold,  "CHAD_PITCH_CTRL_THRESHOLD", 300.0),
-
-    // @Param: CHAD_YAW_CTRL_THRESHOLD
-    // @DisplayName: Yaw control threshold
-    // @Description: Maximum yaw error allowed to control position
-    // @Values: float
-    // @User: Advanced
-    //GSCALAR(yaw_ctrl_threshold,  "CHAD_YAW_CTRL_THRESHOLD", 300.0),
-
-    // @Param: CHAD_ANGLE_CTRL_ACTIVE
-    // @DisplayName: Angle ctrl active
-    // @Description: Chad mode angle control is active
-    // @Values: 0:Disabled,1:Enabled
-    // @User: Advanced
-    //GSCALAR(angle_ctrl_active,  "CHAD_ANGLE_CTRL_ACTIVE", CHAD_ATTITUDE_CONTROL_ENABLED),
-    
+    // variables not in the g class which contain EEPROM saved variables  
 
 
 
@@ -846,10 +748,9 @@ const AP_Param::GroupInfo ParametersG2::var_info[] = {
     // @User: Standard
     AP_GROUPINFO("ORIGIN_ALT", 21, ParametersG2, backup_origin_alt, 0),
 
-    //AP_GROUPINFO("CHAD_ROLL_THRESHOLD", 40, ParametersG2, roll_ctrl_threshold, 300.0f),
-    //AP_GROUPINFO("CHAD_PITCH_THRESHOLD", 41, ParametersG2, pitch_ctrl_threshold, 300.0f),
-    //AP_GROUPINFO("CHAD_YAW_THRESHOLD", 42, ParametersG2, yaw_ctrl_threshold, 300.0f),
-    AP_GROUPINFO("CHAD_ANGLE_CTRL_ACTIVE", 43, ParametersG2, angle_ctrl_active, 1.0f),
+    // @Group: CHAD_
+    // @Path: ../AP_CHAD/AP_CHAD_Parameters.cpp  
+    AP_SUBGROUPINFO(chad_params, "CHAD_", 24, ParametersG2, AP_CHAD_Parameters),
 
     AP_GROUPEND
 };

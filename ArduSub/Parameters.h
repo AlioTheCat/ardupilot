@@ -5,6 +5,7 @@
 #include <AP_Common/AP_Common.h>
 
 #include <AP_Arming/AP_Arming.h>
+#include <AP_CHAD/AP_CHAD_Parameters.h>
 
 // Global parameter class.
 //
@@ -356,21 +357,6 @@ public:
     AP_Int8         acro_trainer;
     AP_Float        acro_expo;
 
-    //////////////////////////////////////////
-    // CHAD Mode
-     
-    AP_Float        Px;
-    AP_Float        Py;
-    AP_Float        Pz;
-    AP_Float        Ix;
-    AP_Float        Iy;
-    AP_Float        Iz;
-    AP_Float        Dx;
-    AP_Float        Dy;
-    AP_Float        Dz;
-
-    //////////////////////////////////////////
-
     AP_Float                surface_depth;
     AP_Int8                 frame_configuration;
 
@@ -406,11 +392,7 @@ public:
     AP_Float backup_origin_lon;
     AP_Float backup_origin_alt;
 
-    // CHAD mode
-    //AP_Float roll_ctrl_threshold;
-    //AP_Float pitch_ctrl_threshold;
-    //AP_Float yaw_ctrl_threshold;
-    AP_Float angle_ctrl_active;
+    AP_CHAD_Parameters chad_params;
 };
 
 extern const AP_Param::Info        var_info[];

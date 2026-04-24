@@ -34,9 +34,6 @@ enum autopilot_yaw_mode {
 #define WP_YAW_BEHAVIOR_LOOK_AHEAD                    3   // auto pilot will look ahead during missions and rtl (primarily meant for traditional helicopters)
 #define WP_YAW_BEHAVIOR_CORRECT_XTRACK                4   // point towards intermediate position target during line following
 
-// CHAD attitude control modes
-#define CHAD_ATTITUDE_CONTROL_DISABLED 0
-#define CHAD_ATTITUDE_CONTROL_ENABLED 1
 
 
 //  Logging parameters - only 32 messages are available to the vehicle here.
