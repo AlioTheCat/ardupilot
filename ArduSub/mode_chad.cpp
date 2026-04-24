@@ -198,7 +198,9 @@ void ModeChad::run(){
 
     // check if connection with CPU still holds, otherwise disarm and alert the user
     if (timeout() && sub.motors.armed()){
-            sub.motors.armed(false); 
+            ///// CORRECT DISARM METHOD //////
+            sub.arming.disarm(AP_Arming::Method::CHADFAILSAFE, true);
+            //////////////////////////////////
             sub.motors.output();
             GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1 sec => Motors disarmed.");
             return; 
