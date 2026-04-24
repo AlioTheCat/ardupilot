@@ -199,9 +199,8 @@ void ModeChad::run(){
     // check if connection with CPU still holds, otherwise disarm and alert the user
     if (timeout() && sub.motors.armed()){
             ///// CORRECT DISARM METHOD //////
-            sub.arming.disarm(AP_Arming::Method::CHADFAILSAFE, true);
+            sub.arming.disarm(AP_Arming::Method::CHAD_RADIO_SILENCE, true);
             //////////////////////////////////
-            sub.motors.output();
             GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1 sec => Motors disarmed.");
             return; 
     }
@@ -247,6 +246,13 @@ void ModeChad::run(){
         guided_angle_state.yaw_cd = ahrs.yaw_sensor;
 
         GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD : Target attitude reset (CPU : reference frame reset)");
+    }
+
+    if (status==2.0) // Not enough matched keypoints, should disarm
+    {
+        sub.arming.disarm(AP_Arming::Method::CHAD_NOT_ENOUGH_MATCHES, true);  
+        GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "CHAD : Lost reference frame. Please set new reference frame. Disarming");
+        return;
     }
 
     // Changement de base prenant en compte les angles mesurés par l'IMU

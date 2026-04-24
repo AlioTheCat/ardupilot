@@ -84,7 +84,8 @@ public:
         DDS = 35,
 
         //// CHAD MODE ////
-        CHADFAILSAFE = 42,
+        CHAD_RADIO_SILENCE = 42,
+        CHAD_NOT_ENOUGH_MATCHES = 43,
         //// CHAD MODE ////
         
         UNKNOWN = 100,
