@@ -28,15 +28,6 @@ bool ModeChad::init(bool ignore_checks){
     return true;
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-//////////////////////              EXPERIMENTAL            ////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////
-
-
-
 ////////////////////////////////    ANGLE CONTROL   ////////////////////////////////
 
 // initialise guided mode's angle controller
@@ -102,9 +93,6 @@ void ModeChad::angle_control_run()
 
     // wrap yaw request
     float yaw_in = wrap_180_cd(guided_angle_state.yaw_cd);
-
-    // // constrain climb rate
-    // float climb_rate_cms = constrain_float(guided_angle_state.climb_rate_cms, -sub.wp_nav.get_default_speed_down(), sub.wp_nav.get_default_speed_up());
 
     // check for timeout - set lean angles and climb rate to zero if no updates received for 3 seconds
     uint32_t tnow = AP_HAL::millis();
@@ -198,9 +186,7 @@ void ModeChad::run(){
 
     // check if connection with CPU still holds, otherwise disarm and alert the user
     if (timeout() && sub.motors.armed()){
-            ///// CORRECT DISARM METHOD //////
             sub.arming.disarm(AP_Arming::Method::CHAD_RADIO_SILENCE, true);
-            //////////////////////////////////
             GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "CHAD : CPU went radio silent for 1 s. Disarming");
             return; 
     }
@@ -223,8 +209,6 @@ void ModeChad::run(){
     float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
     int dt=0;
     float status = 0.0;
-
-    // std::cout << "CHAD : Coucou j'entre dans la fonction run";
 
     Vector3<float> F = {0.f, 0.f, 0.f};
     float& F_lateral (F[0]); float& F_throttle (F[1]); float& F_forward (F[2]); // force to apply to the ROV to control translation
@@ -253,21 +237,21 @@ void ModeChad::run(){
         
         
 
-        // Réception du capteur. Contrôle ssi nouvelle update reçue
+        // Transmition from CHAD sensor
         if (transmition){
 
 
-            // Asservissement de la position
+            // position servo
             PID_servo(measure, dt, F);
 
-            // Scaling des instructions
+            // Scaling
             F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
 
             F_lateral = constrain_float(F_lateral, -1.f, 1.f);
             F_throttle = constrain_float(F_throttle, 0.f, 1.f);
             F_forward = constrain_float(F_forward, -1.f, 1.f);
 
-            // Transmission des instructions moteur
+            // motors instructions
             
             motors.set_forward(F_forward); // set_forward = vers l'avant (entre -1 et 1)
             motors.set_lateral(F_lateral); // set_lateral = vers la gauche (entre -1 et 1)

@@ -214,14 +214,14 @@ protected:
     const char *name4() const override { return "CHAD"; }
     Mode::Number number() const override { return Mode::Number::CHAD; }
 
-    // PID for axes x = forward, y = left, z = up 
+    // PID for axes x = left to right, y = top to bottom, z = back to front 
         AC_PID PIDx{g2.chad_params.Px, g2.chad_params.Ix, g2.chad_params.Dx, 0.345, 0.666, 3, 0, 12, 150, 1};
         AC_PID PIDy{g2.chad_params.Py, g2.chad_params.Iy, g2.chad_params.Dy, 0.345, 0.666, 3, 0, 12, 150, 1};
         AC_PID PIDz{g2.chad_params.Pz, g2.chad_params.Iz, g2.chad_params.Dz, 0.345, 0.666, 3, 0, 12, 150, 1 };
 
     void PID_servo(Vector3<float> target, int dt, Vector3<float>& F); // Computes force to apply from CPU measurements 
 
-    // trying to replicate guided mode's angle control
+    // replication of guided mode angle control
     void angle_control_start();
     bool pos_servo_authorized();
     float remap_angle_diff(float val);

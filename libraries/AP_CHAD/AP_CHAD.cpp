@@ -39,9 +39,8 @@ void AP_CHAD::init()
 
 void AP_CHAD::read()
 {
-    // std::cout << "CHAD sensor : J'entre dans la fonction read" << std::endl;
     ssize_t len = socket -> recv(buffer, sizeof(buffer), 0);
-    // std::cout << "socket length : " << len << ", buffer size : " << sizeof(buffer) << std::endl;
+
     if (len > 0) {
         if (len == sizeof(buffer)) {
 
@@ -50,20 +49,12 @@ void AP_CHAD::read()
             memcpy(&dz,     buffer+8, 4);
             memcpy(&status, buffer+12, 4);
 
-            //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : received : %f, %f, %f", dx, dy, dz);
-
             // std::cout << "CHAD sensor : received : " << dx << ", " << dy << ", " << dz << std::endl; 
 
             update_time_dates();
             new_update=true;
         }
-        else 
-        {
-            //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : data incomplete");   
-        }
-    } else {
-        //GCS_SEND_TEXT(MAV_SEVERITY_INFO, "CHAD sensor : waiting");
-    }
+    } 
 }
 
 bool AP_CHAD::transmit(float& _dx, float& _dy, float& _dz, int& _dt, float& _status) {
