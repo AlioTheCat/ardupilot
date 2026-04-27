@@ -201,7 +201,7 @@ void ModeChad::run(){
             ///// CORRECT DISARM METHOD //////
             sub.arming.disarm(AP_Arming::Method::CHAD_RADIO_SILENCE, true);
             //////////////////////////////////
-            GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "No instruction received for 1 sec => Motors disarmed.");
+            GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "CHAD : CPU went radio silent for 1 s. Disarming");
             return; 
     }
 
@@ -251,7 +251,7 @@ void ModeChad::run(){
     if (status==2.0) // Not enough matched keypoints, should disarm
     {
         sub.arming.disarm(AP_Arming::Method::CHAD_NOT_ENOUGH_MATCHES, true);  
-        GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "CHAD : Lost reference frame. Please set new reference frame. Disarming");
+        GCS_SEND_TEXT(MAV_SEVERITY_CRITICAL, "CHAD : Lost reference frame. Disarming");
         return;
     }
 

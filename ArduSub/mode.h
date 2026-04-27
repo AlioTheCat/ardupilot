@@ -229,13 +229,6 @@ protected:
     void angle_control_run();
     void set_auto_yaw_mode(autopilot_yaw_mode yaw_mode);
 
-    void angle_control_run_V2();
-    // trying to replicate guided mode's pos control
-    
-    // void pos_control_run();
-    // bool set_destination(const Vector3f& destination);
-    // void pos_control_start();
-
 private:
     bool timeout();
 
