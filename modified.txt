@@ -1,0 +1,20 @@
+MODIFIED : 
+ArduSub/ArduSub.cpp
+ArduSub/GCS_MAVLink_Sub.cpp
+ArduSub/Parameters.cpp
+ArduSub/Parameters.h
+ArduSub/Sub.h
+ArduSub/mode.cpp
+ArduSub/mode.h
+ArduSub/wscript
+ArduSub/system.cpp
+libraries/AP_Arming/AP_Arming.cpp
+libraries/AP_Arming/AP_Arming.h
+
+ADDED : 
+ArduSub/mode_chad.cpp
+libraries/AP_CHAD/AP_CHAD.cpp
+libraries/AP_CHAD/AP_CHAD.h
+libraries/AP_CHAD/AP_CHAD_Parameters.cpp
+libraries/AP_CHAD/AP_CHAD_Parameters.h
+libraries/AP_CHAD/AP_CHAD_config.h
