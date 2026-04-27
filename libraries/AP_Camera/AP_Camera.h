@@ -208,10 +208,6 @@ public:
     // parameter var table
     static const struct AP_Param::GroupInfo var_info[];
 
-
-    // CHAD MODE
-    void get_fov_status();
-
 protected:
 
     // return true if vehicle mode allows trigg dist

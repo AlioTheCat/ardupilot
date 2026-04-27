@@ -218,12 +218,6 @@ void ModeChad::run(){
     if (g2.chad_params.attitude_ctrl_enabled == 1) angle_control_run();
 
     // Assumption : the vfov is oriented downwards.
-        
-    float vfov = AP_CHAD_ANGLE; // = - camera_backend.vertical_fov()
-                                // orienté vers le haut
-                                // -40° (-0.69813) ou 0°
-
-    Quaternion cancel_cam_orientation; cancel_cam_orientation.from_euler(vfov, 0.f, 0.f);
 
     Vector3<float> measure = {0.f, 0.f, 0.f};
     float& dx (measure[0]); float& dy (measure[1]) ; float& dz (measure[2]); // measurement data
@@ -255,14 +249,6 @@ void ModeChad::run(){
         return;
     }
 
-    // Changement de base prenant en compte les angles mesurés par l'IMU
-
-    Quaternion adapt_coordinate_system; adapt_coordinate_system.from_euler(
-                                                                            -remap_angle_diff(guided_angle_state.pitch_cd - ahrs.pitch_sensor),
-                                                                            -remap_angle_diff(guided_angle_state.yaw_cd - ahrs.yaw_sensor),
-                                                                            remap_angle_diff(guided_angle_state.roll_cd - ahrs.roll_sensor)
-                                                                           );
-
     if (pos_servo_authorized()){
         
         
@@ -270,14 +256,9 @@ void ModeChad::run(){
         // Réception du capteur. Contrôle ssi nouvelle update reçue
         if (transmition){
 
-            // Changement de référentiel 
-            Vector3<float> measure_camera_straight = (cancel_cam_orientation) * measure;
-
-            // Adaptation aux données de l'IMU
-            Vector3<float> measure_rotated_with_IMU = (adapt_coordinate_system) * measure_camera_straight;
 
             // Asservissement de la position
-            PID_servo(measure_rotated_with_IMU, dt, F);
+            PID_servo(measure, dt, F);
 
             // Scaling des instructions
             F_throttle = F_throttle/2 + 0.5; //From -1 <-> 1 to 0 <-> 1
