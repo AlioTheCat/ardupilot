@@ -1,7 +1,7 @@
 # CHAD MODE user guide for ArduSub
 The Computer Held Aim Drive mode (CHAD) is used to maintain a ROV position using camera information.
 
-It consists of two parts : a custom version of ardupilot that implements a new piloting mode (see https://www.github.com/AlioTheCat/ardupilot.git) and a program running on the Ground Control Station (GCS) called the CHAD Processing Unit (CPU) (see https://www.github.com/noeterrien/CHAD_Processing_Unit.git). 
+It consists in two parts : a custom version of ardupilot that implements a new piloting mode (see https://www.github.com/AlioTheCat/ardupilot.git) and a program running on the Ground Control Station (GCS) called the CHAD Processing Unit (CPU) (see https://www.github.com/noeterrien/CHAD_Processing_Unit.git). 
 
 The CPU is used to fetch images from the camera and compute the translation between two images. The measurements are then sent to ardupilot which computes forces to apply to the motors using a PID.
 
